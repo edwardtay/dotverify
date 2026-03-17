@@ -12,12 +12,12 @@ import { PvmExplorer } from "./pvm-explorer";
 import { AiChat } from "./ai-chat";
 
 const TABS = [
-  { id: "Schemas", label: "Schemas", icon: "◈" },
+  { id: "Schemas", label: "Templates", icon: "◈" },
   { id: "Issue", label: "Issue", icon: "✦" },
   { id: "Verify", label: "Verify", icon: "✓" },
-  { id: "Explorer", label: "Explorer", icon: "◎" },
+  { id: "Explorer", label: "Browse", icon: "◎" },
   { id: "Issuers", label: "Issuers", icon: "⇄" },
-  { id: "PVM", label: "PVM", icon: "⬡" },
+  { id: "PVM", label: "Tech", icon: "⬡" },
   { id: "AI", label: "AI", icon: "●" },
 ] as const;
 

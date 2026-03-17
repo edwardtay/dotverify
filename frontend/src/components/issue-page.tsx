@@ -15,9 +15,9 @@ export function IssuePage({ address }: { address?: `0x${string}` }) {
       {/* Mode selector */}
       <div className="flex gap-2">
         {([
-          { id: "standard" as Mode, label: "Standard / Secure / Delegated" },
-          { id: "sr25519" as Mode, label: "sr25519 (Polkadot Wallet)" },
-          { id: "batch" as Mode, label: "Batch (CSV)" },
+          { id: "standard" as Mode, label: "Single Credential" },
+          { id: "sr25519" as Mode, label: "Polkadot Wallet" },
+          { id: "batch" as Mode, label: "Bulk Issue (CSV)" },
         ]).map((m) => (
           <button
             key={m.id}

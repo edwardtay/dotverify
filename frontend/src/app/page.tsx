@@ -11,8 +11,8 @@ const ROLES = [
     id: "issuer",
     title: "Issue Credentials",
     subtitle: "For universities, employers, DAOs",
-    desc: "Register as a trusted issuer, define credential schemas, and issue verifiable attestations.",
-    steps: ["Register as issuer", "Create schema", "Issue credentials", "Manage & revoke"],
+    desc: "Register your organization, define credential types, and issue verifiable credentials to recipients.",
+    steps: ["Register your organization", "Choose a credential template", "Issue credentials", "Manage & revoke"],
     href: "/app?role=issuer",
     color: "#E6007A",
     bg: "bg-[#E6007A]/5",
@@ -22,8 +22,8 @@ const ROLES = [
     id: "verifier",
     title: "Verify a Credential",
     subtitle: "For anyone — no wallet needed",
-    desc: "Paste a credential UID and instantly verify its authenticity, issuer, and status.",
-    steps: ["Paste credential UID", "See issuer & status", "Check data integrity", "Done"],
+    desc: "Paste a credential ID and instantly check if it's authentic, who issued it, and whether it's still valid.",
+    steps: ["Paste credential ID", "See who issued it", "Check if it's valid", "Done"],
     href: "/app?role=verifier",
     color: "#2563eb",
     bg: "bg-blue-50",
@@ -50,12 +50,12 @@ const USE_CASES = [
 ];
 
 const CAPABILITIES = [
-  { title: "Cross-chain verification", desc: "Send attestation status to any parachain via XCM. No bridges or oracles needed." },
-  { title: "Dual wallet support", desc: "Issue with MetaMask (ECDSA) or Polkadot.js (sr25519). Both ecosystems, one protocol." },
-  { title: "Substrate-native integrity", desc: "BLAKE2-256 hashing for attestation UIDs — compatible with Polkadot state proofs." },
-  { title: "Anti-proxy security", desc: "callerIsOrigin() ensures only direct signers can issue secure attestations." },
-  { title: "Schema resolvers", desc: "Custom hooks for payment-gated, token-gated, or allowlist-controlled credential issuance." },
-  { title: "Batch operations", desc: "Issue or revoke hundreds of credentials in a single transaction." },
+  { title: "Verify across chains", desc: "Credentials issued on Polkadot Hub can be verified on any connected chain — no bridges needed." },
+  { title: "Both wallet ecosystems", desc: "Issue from MetaMask or Polkadot wallets. Recipients don't need a wallet to verify." },
+  { title: "Tamper-proof", desc: "Every credential has a unique fingerprint stored on-chain. Any modification is instantly detectable." },
+  { title: "Secure issuance", desc: "Extra protection ensures only authorized signers can issue credentials — no impersonation possible." },
+  { title: "Access controls", desc: "Control who can issue credentials: payment-gated, token-gated, or invitation-only." },
+  { title: "Bulk issuance", desc: "Issue hundreds of credentials at once via CSV upload." },
 ];
 
 export default function LandingPage() {
@@ -99,7 +99,7 @@ export default function LandingPage() {
               value={verifyUid}
               onChange={(e) => setVerifyUid(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && verifyUid && router.push(`/verify/${verifyUid}`)}
-              placeholder="Paste credential UID to verify (0x...)"
+              placeholder="Paste a credential ID to verify..."
               className="flex-1 border border-border rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#E6007A]/30 focus:border-[#E6007A]"
             />
             <button
@@ -167,9 +167,9 @@ export default function LandingPage() {
 
         {/* Capabilities */}
         <section className="px-4 pb-16 max-w-5xl mx-auto">
-          <h2 className="text-lg font-bold mb-1">Powered by Polkadot Hub PVM</h2>
+          <h2 className="text-lg font-bold mb-1">Why Polkadot Hub</h2>
           <p className="text-xs text-muted-foreground mb-4">
-            Native precompiles that enable capabilities not available on standard EVM chains.
+            Built on Polkadot&apos;s smart contract platform with capabilities not available on other chains.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {CAPABILITIES.map((c) => (

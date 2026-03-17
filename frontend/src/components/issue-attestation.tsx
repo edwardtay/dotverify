@@ -84,9 +84,9 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
         <h2 className="font-semibold text-sm mb-3">Issuance Mode</h2>
         <div className="flex gap-1 flex-wrap">
           {([
-            { id: "standard" as IssueMode, label: "Standard", desc: "Basic attestation via attest()" },
-            { id: "secure" as IssueMode, label: "Secure (PVM)", desc: "callerIsOrigin — blocks proxy attacks" },
-            { id: "delegated" as IssueMode, label: "Delegated", desc: "Issue on behalf of another issuer" },
+            { id: "standard" as IssueMode, label: "Standard", desc: "Issue a credential directly" },
+            { id: "secure" as IssueMode, label: "Secure", desc: "Extra protection against impersonation" },
+            { id: "delegated" as IssueMode, label: "On Behalf Of", desc: "Issue for another organization" },
           ]).map((m) => (
             <button
               key={m.id}
@@ -104,7 +104,7 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
         </div>
         {mode === "secure" && (
           <p className="text-[10px] text-[#E6007A] mt-2">
-            Uses PVM&apos;s callerIsOrigin() precompile — ensures the transaction signer is the direct caller, blocking proxy/relay/meta-tx attacks. This is impossible on standard EVM.
+            Secure mode verifies you are directly signing the transaction, preventing anyone from issuing credentials on your behalf without permission.
           </p>
         )}
         {mode === "delegated" && (
@@ -161,7 +161,7 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
 
           {/* Recipient */}
           <div>
-            <label className="text-[11px] font-medium text-muted-foreground block mb-1">Recipient Address</label>
+            <label className="text-[11px] font-medium text-muted-foreground block mb-1">Recipient Wallet Address</label>
             <input
               type="text"
               value={recipient}
@@ -218,13 +218,13 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
               <p className="font-semibold text-sm mb-2">Credential Issued</p>
               <p className="font-mono text-[10px]">Tx: {txHash}</p>
               <p className="text-[10px] mt-1 text-green-700">
-                {mode === "secure" && "Issued via attestSecure() with callerIsOrigin PVM precompile."}
-                {mode === "delegated" && `Issued on behalf of ${delegateFor?.slice(0, 8)}... via delegation.`}
-                {mode === "standard" && "Issued via attest() with BLAKE2-256 UID."}
+                {mode === "secure" && "Issued with secure mode — direct signer verification."}
+                {mode === "delegated" && `Issued on behalf of ${delegateFor?.slice(0, 8)}...`}
+                {mode === "standard" && "Credential issued and stored on-chain."}
               </p>
               <p className="text-[10px] mt-2 text-muted-foreground">
                 The recipient can share their credential via the verification link.
-                Check the Explorer tab to find the attestation UID.
+                Check the Browse tab to find and share the credential.
               </p>
             </div>
           )}
@@ -238,10 +238,9 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
       {/* PVM Info */}
       <div className="border border-border rounded-lg p-3 bg-muted/10">
         <p className="text-[10px] text-muted-foreground">
-          <span className="font-medium">PVM-native features used:</span> All attestation UIDs are generated with BLAKE2-256 (not keccak256).
-          Data integrity is verified via BLAKE2 hash stored on-chain.
-          {mode === "secure" && " Secure mode uses callerIsOrigin() to prevent proxy/relay attacks."}
-          {" "}Attestations can be verified cross-chain via XCM.
+          Credentials are stored permanently on Polkadot Hub with tamper-proof integrity hashing.
+          {mode === "secure" && " Secure mode adds extra identity verification."}
+          {" "}Credentials can be verified across chains.
         </p>
       </div>
     </div>

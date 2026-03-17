@@ -42,7 +42,7 @@ export function VerifyCredential() {
         <div className="space-y-3">
           <div>
             <label className="text-[11px] font-medium text-muted-foreground block mb-1">
-              Attestation UID
+              Credential ID
             </label>
             <input
               type="text"
