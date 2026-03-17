@@ -16,7 +16,7 @@ function AppContent() {
     : role === "verifier"
       ? "Verify"
       : role === "holder"
-        ? "My Creds"
+        ? "Explorer"
         : undefined;
 
   return <Dashboard defaultTab={defaultTab} />;

@@ -180,7 +180,7 @@ function SchemaCard({ schemaUid }: { schemaUid: string }) {
   );
 }
 
-export function Explorer() {
+export function Explorer({ address }: { address?: `0x${string}` }) {
   const [filter, setFilter] = useState("");
 
   const { data: schemaCount } = useReadContract({
