@@ -70,9 +70,6 @@ export function Navbar() {
           {siteConfig.name}
         </Link>
         <div className="flex items-center gap-1.5">
-          <Link href="/demo" className="text-[11px] font-medium text-muted-foreground hover:text-[#E6007A] transition-colors hidden sm:block">
-            Demo
-          </Link>
           <PolkadotWalletButton />
           <EvmButton />
         </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { toHex } from "viem";
 import { DOTVERIFY_ABI, DOTVERIFY_ADDRESS } from "@/config/contract";
+import { SchemaSelector } from "./schema-selector";
 
 type IssueMode = "standard" | "secure" | "delegated";
 
@@ -17,12 +18,6 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
 
   const { writeContract, data: txHash, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
-
-  const { data: schemaUids } = useReadContract({
-    address: DOTVERIFY_ADDRESS,
-    abi: DOTVERIFY_ABI,
-    functionName: "getAllSchemaUids",
-  });
 
   const { data: selectedSchema } = useReadContract({
     address: DOTVERIFY_ADDRESS,
@@ -129,46 +124,38 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
           <p className="text-xs text-amber-600 mb-3">Connect your wallet to issue attestations.</p>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Schema selector */}
-          <div>
-            <label className="text-[11px] font-medium text-muted-foreground block mb-1">Schema</label>
-            <select
-              value={schemaUid}
-              onChange={(e) => {
-                setSchemaUid(e.target.value);
-                setDataFields({});
-              }}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#E6007A]"
-            >
-              <option value="">Select a schema...</option>
-              {schemaUids &&
-                (schemaUids as `0x${string}`[]).map((uid) => (
-                  <option key={uid} value={uid}>
-                    {uid.slice(0, 18)}...
-                  </option>
-                ))}
-            </select>
-            {schema && (
-              <div className="text-[10px] text-muted-foreground mt-1">
-                <span className="font-medium">{schema.name}</span> &mdash; {schema.revocable ? "Revocable" : "Permanent"}
-                {schema.resolver && schema.resolver !== "0x0000000000000000000000000000000000000000" && (
-                  <span className="ml-1 text-[#E6007A]">+ Resolver</span>
-                )}
-              </div>
-            )}
-          </div>
+          <SchemaSelector
+            value={schemaUid}
+            onChange={(uid) => {
+              setSchemaUid(uid);
+              setDataFields({});
+            }}
+          />
 
           {/* Recipient */}
           <div>
-            <label className="text-[11px] font-medium text-muted-foreground block mb-1">Recipient Wallet Address</label>
-            <input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="0x..."
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#E6007A]"
-            />
+            <label className="text-[11px] font-medium text-muted-foreground block mb-1">Who is this credential for?</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                placeholder="Wallet address (0x...)"
+                className="flex-1 border border-border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#E6007A]"
+              />
+              {address && (
+                <button
+                  onClick={() => setRecipient(address)}
+                  className={`px-3 py-2 border rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+                    recipient === address ? "border-[#E6007A] bg-[#E6007A]/5 text-[#E6007A]" : "border-border hover:bg-muted/30"
+                  }`}
+                >
+                  Myself
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Dynamic fields based on schema */}
