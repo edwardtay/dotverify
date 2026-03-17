@@ -261,7 +261,7 @@ contract DotVerify is Ownable, ReentrancyGuard, Pausable {
     }
 
     /// @notice Issue attestation via sr25519 signature from a Substrate wallet
-    /// @dev Polkadot.js/Talisman users issue credentials without MetaMask.
+    /// @dev Polkadot.js/Talisman users authorize via sr25519 signature, verified on-chain. EVM wallet relays tx.
     ///      Replay protected via BLAKE2 signature hashing.
     function attestWithSr25519(
         uint8[64] calldata signature,

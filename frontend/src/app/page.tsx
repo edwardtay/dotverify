@@ -87,8 +87,9 @@ export default function LandingPage() {
             Verifiable Credentials.{" "}
             <span className="text-[#E6007A]">On-Chain.</span>
           </h1>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
             Issue, verify, and share tamper-proof credentials across the Polkadot ecosystem.
+            Built for DAOs, accelerators, and organizations where transparency matters.
           </p>
 
           {/* Quick verify */}

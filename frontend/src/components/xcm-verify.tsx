@@ -95,8 +95,9 @@ export function XcmVerify() {
           XCM Cross-Chain Attestation Verification
         </h2>
         <p className="text-[10px] text-muted-foreground mb-4">
-          Send attestation verification status to any Polkadot parachain via native XCM messaging.
-          Uses IXcm precompile at 0xA0000 — <strong>impossible on standard EVM</strong>.
+          Send attestation verification status to any Polkadot parachain via XCM messaging.
+          Uses IXcm precompile at 0xA0000. Destination/message encoding is simplified for demo — production
+          would use proper SCALE-encoded XCM instructions.
         </p>
 
         <div className="space-y-3">

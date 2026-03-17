@@ -412,7 +412,7 @@ export async function execute(
    All attestation and schema UIDs use Polkadot-native BLAKE2-256 instead of keccak256. This ensures compatibility with Substrate's native hashing and provides attestation integrity verification.
 
 2. **sr25519 Issuer Authentication** (ISystem 0x900)
-   Substrate wallet users (Polkadot.js, Talisman, SubWallet) can issue attestations using their native sr25519 (Schnorr/Ristretto) signatures via attestWithSr25519(). No MetaMask required. Replay attack prevention via BLAKE2 signature hashing.
+   Substrate wallet users (Polkadot.js, Talisman, SubWallet) can authorize attestations using their native sr25519 (Schnorr/Ristretto) signatures via attestWithSr25519(). The sr25519 signature is verified on-chain by the PVM precompile, while an EVM wallet relays the transaction. Replay attack prevention via BLAKE2 signature hashing.
 
 3. **XCM Cross-Chain Attestation Queries** (IXcm 0xA0000)
    Attestation status can be sent to any Polkadot parachain via XCM. A credential issued on Hub can be verified on Moonbeam, Astar, or any other parachain without bridges.

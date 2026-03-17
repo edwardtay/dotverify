@@ -12,7 +12,7 @@ const PVM_FEATURES = [
   },
   {
     name: "sr25519 Issuer Authentication",
-    desc: "Substrate wallet users (Polkadot.js, Talisman, SubWallet) can issue attestations using their native sr25519 signatures. No MetaMask required.",
+    desc: "Substrate wallet users (Polkadot.js, Talisman, SubWallet) authorize attestations using their native sr25519 signatures, verified on-chain by PVM. An EVM wallet relays the transaction.",
     precompile: "ISystem (0x900)",
     function: "sr25519Verify(sig, msg, pubKey)",
   },

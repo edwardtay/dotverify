@@ -49,7 +49,7 @@ Issuance modes:
 - **Standard (attest)**: basic attestation with BLAKE2-256 UID
 - **Secure (attestSecure)**: uses PVM callerIsOrigin() to block proxy attacks
 - **Delegated (attestDelegated)**: issue on behalf of another issuer who authorized you
-- **sr25519 (attestWithSr25519)**: Substrate wallets issue without MetaMask (replay protected via BLAKE2)
+- **sr25519 (attestWithSr25519)**: Substrate wallets authorize via sr25519 signature, verified on-chain by PVM precompile (EVM wallet relays tx, replay protected via BLAKE2)
 
 Keep responses concise with bullet points. Use **bold** for key numbers and status.`;
 

@@ -35,7 +35,7 @@ DotVerify's smart contract uses **6 PVM-exclusive precompiles** from two interfa
 | Feature | Precompile | Standard EVM? | What it enables |
 |---------|-----------|:---:|----------------|
 | **BLAKE2-256 attestation hashing** | ISystem `0x900` | No | All UIDs use Polkadot-native hashing for Substrate compatibility |
-| **sr25519 issuer authentication** | ISystem `0x900` | No | Substrate wallets issue credentials without MetaMask |
+| **sr25519 issuer authentication** | ISystem `0x900` | No | Substrate wallets authorize credentials via sr25519, verified on-chain by PVM |
 | **XCM cross-chain queries** | IXcm `0xA0000` | No | Verify credentials on any parachain without bridges |
 | **callerIsOrigin protection** | ISystem `0x900` | No | Block proxy/relay attacks on credential issuance |
 | **ecdsaToEthAddress** | ISystem `0x900` | No | Cross-ecosystem issuer identity resolution |

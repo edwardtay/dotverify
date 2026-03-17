@@ -214,13 +214,17 @@ export function IssueAttestation({ address }: { address?: `0x${string}` }) {
           </button>
 
           {isSuccess && txHash && (
-            <div className="text-xs text-green-600 border border-green-200 bg-green-50 rounded-lg p-3">
-              <p className="font-medium">Attestation issued!</p>
-              <p className="font-mono text-[10px] mt-1">Tx: {txHash}</p>
-              <p className="text-[10px] mt-1">
-                {mode === "secure" && "Issued via attestSecure() with callerIsOrigin PVM precompile verification."}
-                {mode === "delegated" && `Issued on behalf of ${delegateFor?.slice(0, 8)}... via delegated attestation.`}
-                {mode === "standard" && "Issued via standard attest() with BLAKE2-256 UID generation."}
+            <div className="text-xs text-green-600 border border-green-200 bg-green-50 rounded-lg p-4">
+              <p className="font-semibold text-sm mb-2">Credential Issued</p>
+              <p className="font-mono text-[10px]">Tx: {txHash}</p>
+              <p className="text-[10px] mt-1 text-green-700">
+                {mode === "secure" && "Issued via attestSecure() with callerIsOrigin PVM precompile."}
+                {mode === "delegated" && `Issued on behalf of ${delegateFor?.slice(0, 8)}... via delegation.`}
+                {mode === "standard" && "Issued via attest() with BLAKE2-256 UID."}
+              </p>
+              <p className="text-[10px] mt-2 text-muted-foreground">
+                The recipient can share their credential via the verification link.
+                Check the Explorer tab to find the attestation UID.
               </p>
             </div>
           )}
