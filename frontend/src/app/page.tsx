@@ -1,112 +1,184 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
-const FEATURES = [
-  { icon: "◈", title: "Schema Registry", desc: "Define attestation schemas — field types, revocability, metadata" },
-  { icon: "✦", title: "Issue Credentials", desc: "Create on-chain attestations under any schema with BLAKE2 hashing" },
-  { icon: "✓", title: "Verify Instantly", desc: "Check any credential by UID — valid, expired, or revoked" },
-  { icon: "⬡", title: "PVM-Native Security", desc: "sr25519 issuer auth, BLAKE2 integrity, callerIsOrigin protection" },
-  { icon: "⇄", title: "XCM Cross-Chain", desc: "Query and relay attestation status to any Polkadot parachain" },
-  { icon: "●", title: "AI Assistant", desc: "Analyze documents, suggest schemas, verify credentials via chat" },
+const ROLES = [
+  {
+    id: "issuer",
+    title: "I want to issue credentials",
+    subtitle: "Universities, employers, DAOs, accelerators",
+    desc: "Register as a trusted issuer, define credential schemas, and issue verifiable attestations to recipients.",
+    steps: ["Register as issuer", "Create a schema", "Issue credentials", "Manage & revoke"],
+    href: "/app?role=issuer",
+    color: "#E6007A",
+  },
+  {
+    id: "verifier",
+    title: "I want to verify a credential",
+    subtitle: "Employers, platforms, protocols, anyone",
+    desc: "Paste a credential UID and instantly check if it's valid, expired, or revoked — no account needed.",
+    steps: ["Paste credential UID", "See issuer & status", "Check data integrity", "Done"],
+    href: "/app?role=verifier",
+    color: "#2563eb",
+  },
+  {
+    id: "holder",
+    title: "I want to view my credentials",
+    subtitle: "Students, employees, members, contributors",
+    desc: "Connect your wallet to see all credentials issued to you. Share verification links with anyone.",
+    steps: ["Connect wallet", "View credentials", "Copy share link", "Send to verifier"],
+    href: "/app?role=holder",
+    color: "#16a34a",
+  },
 ];
 
-const PVM_FEATURES = [
-  { feature: "BLAKE2-256 attestation hashing", precompile: "ISystem 0x900", evm: "No" },
-  { feature: "sr25519 issuer authentication", precompile: "ISystem 0x900", evm: "No" },
-  { feature: "XCM cross-chain attestation queries", precompile: "IXcm 0xA0000", evm: "No" },
-  { feature: "ecdsaToEthAddress identity resolution", precompile: "ISystem 0x900", evm: "No" },
-  { feature: "callerIsOrigin anti-proxy protection", precompile: "ISystem 0x900", evm: "No" },
-  { feature: "2D weight metering (refTime + proofSize)", precompile: "ISystem 0x900", evm: "No" },
+const USE_CASES = [
+  { title: "Academic Diplomas", desc: "Universities issue permanent, non-revocable degree attestations verified cross-chain", icon: "🎓" },
+  { title: "DAO Membership", desc: "DAOs issue revocable membership credentials with on-chain audit trail", icon: "🏛" },
+  { title: "Accelerator Cohorts", desc: "Programs issue completion certificates to participants with batch issuance", icon: "🚀" },
+  { title: "Enterprise Certs", desc: "Consortiums issue partner certifications with resolver-gated access control", icon: "🔐" },
+  { title: "Contributor Attestations", desc: "Projects attest to developer contributions with cross-chain portability", icon: "🛠" },
+  { title: "KYC / Compliance", desc: "Verified once on Hub, portable to any parachain via XCM — no re-verification", icon: "✓" },
+];
+
+const WHY_DIFFERENT = [
+  {
+    title: "Cross-chain by default",
+    problem: "EAS on Optimism can't verify a credential on Arbitrum.",
+    solution: "XCM delivers attestation status to any of 50+ parachains. No bridges. No oracles.",
+  },
+  {
+    title: "Two signature ecosystems",
+    problem: "Every protocol only supports ECDSA (MetaMask).",
+    solution: "sr25519 issuers (Polkadot.js) and ECDSA issuers (MetaMask) coexist natively.",
+  },
+  {
+    title: "Substrate-native integrity",
+    problem: "keccak256 hashes can't be verified by Substrate state proofs.",
+    solution: "BLAKE2-256 UIDs are compatible with Polkadot's native storage and verification.",
+  },
+  {
+    title: "Anti-proxy security",
+    problem: "EAS can't prevent proxy contracts from issuing credentials on your behalf.",
+    solution: "callerIsOrigin() guarantees only direct signers can issue secure attestations.",
+  },
 ];
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-12">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
         {/* Hero */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h1 className="text-3xl font-bold tracking-tight mb-3">
             Verifiable Credentials.{" "}
             <span className="text-[#E6007A]">On-Chain.</span>
           </h1>
-          <p className="text-muted-foreground text-sm max-w-lg mx-auto mb-6">
-            The Ethereum Attestation Service (EAS) for Polkadot — powered by PVM precompiles
-            that make attestations more secure than on any standard EVM chain.
+          <p className="text-muted-foreground text-sm max-w-xl mx-auto mb-2">
+            Issue, verify, and share tamper-proof credentials across the Polkadot ecosystem.
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <Link
-              href="/app"
-              className="px-4 py-2 bg-[#E6007A] text-white rounded-lg text-sm font-medium hover:bg-[#c40066] transition-colors"
-            >
-              Launch App
-            </Link>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 border border-border rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors"
-            >
-              View Contract
-            </a>
-          </div>
+          <p className="text-muted-foreground text-xs max-w-lg mx-auto">
+            Built for high-trust use cases: diplomas, certifications, DAO membership, contributor attestations.
+          </p>
         </div>
 
-        {/* Features */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-16">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="border border-border rounded-lg p-4">
-              <span className="text-lg mb-2 block">{f.icon}</span>
-              <h3 className="font-semibold text-sm mb-1">{f.title}</h3>
-              <p className="text-[11px] text-muted-foreground">{f.desc}</p>
-            </div>
+        {/* Role-based entry */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+          {ROLES.map((role) => (
+            <Link
+              key={role.id}
+              href={role.href}
+              className="border border-border rounded-xl p-5 hover:shadow-md transition-all group"
+            >
+              <h2 className="font-bold text-sm mb-0.5" style={{ color: role.color }}>
+                {role.title}
+              </h2>
+              <p className="text-[10px] text-muted-foreground mb-3">{role.subtitle}</p>
+              <p className="text-xs text-muted-foreground mb-4">{role.desc}</p>
+              <div className="space-y-1.5">
+                {role.steps.map((step, i) => (
+                  <div key={step} className="flex items-center gap-2 text-[11px]">
+                    <span
+                      className="w-4 h-4 rounded-full text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: role.color }}
+                    >
+                      {i + 1}
+                    </span>
+                    {step}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-xs font-medium group-hover:underline" style={{ color: role.color }}>
+                Get started →
+              </div>
+            </Link>
           ))}
         </div>
 
-        {/* Why PVM */}
+        {/* Quick verify (no wallet needed) */}
+        <div className="border border-border rounded-xl p-6 mb-16 bg-muted/10">
+          <h2 className="font-bold text-sm mb-1">Quick Verify — No Wallet Needed</h2>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Anyone can verify a credential. Just paste the UID.
+          </p>
+          <QuickVerifyInput />
+        </div>
+
+        {/* Use cases */}
         <div className="mb-16">
-          <h2 className="text-lg font-bold mb-4">Why PVM? (Not Possible on Standard EVM)</h2>
-          <div className="border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border bg-muted/30">
-                  <th className="text-left px-3 py-2 font-semibold">Feature</th>
-                  <th className="text-left px-3 py-2 font-semibold">Precompile</th>
-                  <th className="text-center px-3 py-2 font-semibold">Standard EVM?</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PVM_FEATURES.map((f) => (
-                  <tr key={f.feature} className="border-b border-border last:border-0">
-                    <td className="px-3 py-2">{f.feature}</td>
-                    <td className="px-3 py-2 font-mono text-[10px]">{f.precompile}</td>
-                    <td className="px-3 py-2 text-center text-red-500 font-bold">{f.evm}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <h2 className="text-lg font-bold mb-4">Built For</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {USE_CASES.map((uc) => (
+              <div key={uc.title} className="border border-border rounded-lg p-4">
+                <span className="text-xl mb-2 block">{uc.icon}</span>
+                <h3 className="font-semibold text-xs mb-1">{uc.title}</h3>
+                <p className="text-[10px] text-muted-foreground">{uc.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* How It Works */}
+        {/* Why different */}
         <div className="mb-16">
-          <h2 className="text-lg font-bold mb-4">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <h2 className="text-lg font-bold mb-1">Why Not Just Use EAS?</h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            EAS proved the attestation model. DotVerify deploys it where cross-chain is native.
+          </p>
+          <div className="space-y-3">
+            {WHY_DIFFERENT.map((d) => (
+              <div key={d.title} className="border border-border rounded-lg p-4">
+                <h3 className="font-semibold text-xs mb-2">{d.title}</h3>
+                <div className="grid grid-cols-2 gap-3 text-[11px]">
+                  <div>
+                    <span className="text-red-500 font-medium block mb-0.5">Problem (EVM)</span>
+                    <span className="text-muted-foreground">{d.problem}</span>
+                  </div>
+                  <div>
+                    <span className="text-green-600 font-medium block mb-0.5">DotVerify (PVM)</span>
+                    <span>{d.solution}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="border border-border rounded-xl p-6 text-center mb-8">
+          <div className="grid grid-cols-4 gap-4">
             {[
-              { step: "1", title: "Register Schema", desc: "Define credential fields and rules" },
-              { step: "2", title: "Issue Attestation", desc: "Create on-chain credential with BLAKE2 hash" },
-              { step: "3", title: "Share UID", desc: "Recipients share their attestation UID" },
-              { step: "4", title: "Verify Anywhere", desc: "Anyone can verify — on-chain or cross-chain via XCM" },
+              { label: "Precompiles Used", value: "6" },
+              { label: "Unit Tests", value: "51" },
+              { label: "E2E Tests", value: "11" },
+              { label: "Lines of Solidity", value: "480+" },
             ].map((s) => (
-              <div key={s.step} className="border border-border rounded-lg p-4 text-center">
-                <span className="inline-block w-6 h-6 rounded-full bg-[#E6007A] text-white text-xs font-bold leading-6 mb-2">
-                  {s.step}
-                </span>
-                <h3 className="font-semibold text-sm mb-1">{s.title}</h3>
-                <p className="text-[11px] text-muted-foreground">{s.desc}</p>
+              <div key={s.label}>
+                <p className="text-2xl font-bold text-[#E6007A]">{s.value}</p>
+                <p className="text-[10px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
           </div>
@@ -116,3 +188,26 @@ export default function Home() {
     </div>
   );
 }
+
+function QuickVerifyInput() {
+  const [uid, setUid] = useState("");
+
+  return (
+    <div className="flex gap-2">
+      <input
+        type="text"
+        value={uid}
+        onChange={(e) => setUid(e.target.value)}
+        placeholder="Paste attestation UID (0x...)"
+        className="flex-1 border border-border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#E6007A]"
+      />
+      <Link
+        href={uid ? `/verify/${uid}` : "#"}
+        className={`px-4 py-2 bg-[#E6007A] text-white rounded-lg text-sm font-medium hover:bg-[#c40066] transition-colors ${!uid ? "opacity-50 pointer-events-none" : ""}`}
+      >
+        Verify
+      </Link>
+    </div>
+  );
+}
+

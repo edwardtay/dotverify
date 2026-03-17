@@ -7,22 +7,34 @@ import { SchemaRegistry } from "./schema-registry";
 import { IssueAttestation } from "./issue-attestation";
 import { VerifyCredential } from "./verify-credential";
 import { MyAttestations } from "./my-attestations";
+import { Explorer } from "./explorer";
+import { IssuerDashboard } from "./issuer-dashboard";
+import { BatchAttestation } from "./batch-attestation";
+import { Sr25519Attest } from "./sr25519-attest";
+import { XcmVerify } from "./xcm-verify";
 import { PvmExplorer } from "./pvm-explorer";
 import { AiChat } from "./ai-chat";
 
 const TABS = [
   { id: "Schemas", label: "Schemas", icon: "◈" },
   { id: "Issue", label: "Issue", icon: "✦" },
+  { id: "sr25519", label: "sr25519", icon: "🔑" },
+  { id: "XCM", label: "XCM", icon: "⇄" },
   { id: "Verify", label: "Verify", icon: "✓" },
   { id: "My Creds", label: "My Creds", icon: "◎" },
+  { id: "Explorer", label: "Explorer", icon: "🔍" },
+  { id: "Issuers", label: "Issuers", icon: "🏛" },
+  { id: "Batch", label: "Batch", icon: "📋" },
   { id: "PVM", label: "PVM", icon: "⬡" },
   { id: "AI", label: "AI", icon: "●" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
-export function Dashboard() {
-  const [activeTab, setActiveTab] = useState<TabId>("Schemas");
+export function Dashboard({ defaultTab }: { defaultTab?: string }) {
+  const [activeTab, setActiveTab] = useState<TabId>(
+    (defaultTab && TABS.some((t) => t.id === defaultTab) ? defaultTab : "Schemas") as TabId
+  );
   const { address } = useAccount();
 
   return (
@@ -56,8 +68,13 @@ export function Dashboard() {
         >
           {activeTab === "Schemas" && <SchemaRegistry />}
           {activeTab === "Issue" && <IssueAttestation address={address} />}
+          {activeTab === "sr25519" && <Sr25519Attest />}
+          {activeTab === "XCM" && <XcmVerify />}
           {activeTab === "Verify" && <VerifyCredential />}
           {activeTab === "My Creds" && <MyAttestations address={address} />}
+          {activeTab === "Explorer" && <Explorer />}
+          {activeTab === "Issuers" && <IssuerDashboard />}
+          {activeTab === "Batch" && <BatchAttestation address={address} />}
           {activeTab === "PVM" && <PvmExplorer />}
           {activeTab === "AI" && <AiChat address={address} />}
         </motion.div>

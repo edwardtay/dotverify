@@ -34,10 +34,9 @@ export function usePolkadotWallet() {
     setError(null);
 
     try {
-      // Dynamic import to avoid SSR issues
       const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");
 
-      const extensions = await web3Enable("DotFolio");
+      const extensions = await web3Enable("DotVerify");
 
       if (extensions.length === 0) {
         setError("No Polkadot wallet found. Install SubWallet, Talisman, or Polkadot.js extension.");
@@ -59,7 +58,6 @@ export function usePolkadotWallet() {
 
       setAccounts(mapped);
 
-      // Auto-select first if none selected — use functional update to avoid stale closure
       setSelectedAccount((current) => {
         if (current) return current;
         sessionStorage.setItem("polkadot-account", JSON.stringify(mapped[0]));
@@ -83,6 +81,34 @@ export function usePolkadotWallet() {
     sessionStorage.removeItem("polkadot-account");
   }, []);
 
+  /// Sign a raw message with the selected Polkadot account (sr25519)
+  const signRaw = useCallback(async (message: string): Promise<{ signature: string; address: string } | null> => {
+    if (!selectedAccount) return null;
+
+    try {
+      const { web3FromSource } = await import("@polkadot/extension-dapp");
+      const injector = await web3FromSource(selectedAccount.source);
+
+      if (!injector.signer?.signRaw) {
+        throw new Error("Wallet does not support signRaw");
+      }
+
+      const result = await injector.signer.signRaw({
+        address: selectedAccount.address,
+        data: message,
+        type: "bytes",
+      });
+
+      return {
+        signature: result.signature,
+        address: selectedAccount.address,
+      };
+    } catch (err) {
+      setError(`Signing failed: ${err}`);
+      return null;
+    }
+  }, [selectedAccount]);
+
   return {
     accounts,
     selectedAccount,
@@ -91,5 +117,6 @@ export function usePolkadotWallet() {
     connect,
     selectAccount,
     disconnect,
+    signRaw,
   };
 }

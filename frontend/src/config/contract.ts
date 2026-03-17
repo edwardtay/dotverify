@@ -1,7 +1,7 @@
 export const DOTVERIFY_ADDRESS = process.env.NEXT_PUBLIC_DOTVERIFY_ADDRESS as `0x${string}` | undefined;
 
 export const DOTVERIFY_ABI = [
-  // Schema Registry
+  // Schema Registry (3-arg overload, no resolver)
   {
     name: "registerSchema",
     type: "function",
@@ -10,6 +10,19 @@ export const DOTVERIFY_ABI = [
       { name: "name", type: "string" },
       { name: "definition", type: "string" },
       { name: "revocable", type: "bool" },
+    ],
+    outputs: [{ name: "uid", type: "bytes32" }],
+  },
+  // Schema Registry (4-arg overload, with resolver)
+  {
+    name: "registerSchema",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "name", type: "string" },
+      { name: "definition", type: "string" },
+      { name: "revocable", type: "bool" },
+      { name: "resolver", type: "address" },
     ],
     outputs: [{ name: "uid", type: "bytes32" }],
   },
@@ -28,6 +41,7 @@ export const DOTVERIFY_ABI = [
           { name: "name", type: "string" },
           { name: "definition", type: "string" },
           { name: "revocable", type: "bool" },
+          { name: "resolver", type: "address" },
           { name: "createdAt", type: "uint256" },
         ],
       },
@@ -75,6 +89,34 @@ export const DOTVERIFY_ABI = [
     outputs: [{ name: "uid", type: "bytes32" }],
   },
   {
+    name: "attestWithSr25519",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "signature", type: "uint8[64]" },
+      { name: "publicKey", type: "bytes32" },
+      { name: "schemaUid", type: "bytes32" },
+      { name: "recipient", type: "address" },
+      { name: "data", type: "bytes" },
+      { name: "expiresAt", type: "uint256" },
+    ],
+    outputs: [{ name: "uid", type: "bytes32" }],
+  },
+  {
+    name: "attestDelegated",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "issuer", type: "address" },
+      { name: "schemaUid", type: "bytes32" },
+      { name: "recipient", type: "address" },
+      { name: "data", type: "bytes" },
+      { name: "expiresAt", type: "uint256" },
+      { name: "refUid", type: "bytes32" },
+    ],
+    outputs: [{ name: "uid", type: "bytes32" }],
+  },
+  {
     name: "revoke",
     type: "function",
     stateMutability: "nonpayable",
@@ -97,6 +139,7 @@ export const DOTVERIFY_ABI = [
           { name: "issuer", type: "address" },
           { name: "recipient", type: "address" },
           { name: "data", type: "bytes" },
+          { name: "dataHash", type: "bytes32" },
           { name: "issuedAt", type: "uint256" },
           { name: "expiresAt", type: "uint256" },
           { name: "revoked", type: "bool" },
@@ -155,6 +198,22 @@ export const DOTVERIFY_ABI = [
     ],
     outputs: [],
   },
+  {
+    name: "estimateXcmWeight",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "message", type: "bytes" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "refTime", type: "uint64" },
+          { name: "proofSize", type: "uint64" },
+        ],
+      },
+    ],
+  },
   // System
   {
     name: "getRemainingWeight",
@@ -194,6 +253,144 @@ export const DOTVERIFY_ABI = [
     inputs: [],
     outputs: [{ name: "", type: "bytes32" }],
   },
+  // Issuer Registry
+  {
+    name: "registerIssuer",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "name", type: "string" }],
+    outputs: [],
+  },
+  {
+    name: "getIssuer",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "addr", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "registered", type: "bool" },
+          { name: "name", type: "string" },
+          { name: "substrateAccountId", type: "bytes32" },
+          { name: "codeHashAtRegistration", type: "bytes32" },
+          { name: "attestationsMade", type: "uint256" },
+          { name: "registeredAt", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "getIssuerCount",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  // Delegates
+  {
+    name: "addDelegate",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "delegate", type: "address" }],
+    outputs: [],
+  },
+  {
+    name: "removeDelegate",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "delegate", type: "address" }],
+    outputs: [],
+  },
+  {
+    name: "delegates",
+    type: "function",
+    stateMutability: "view",
+    inputs: [
+      { name: "issuer", type: "address" },
+      { name: "delegate", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  // Batch Operations
+  {
+    name: "multiAttest",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      {
+        name: "requests",
+        type: "tuple[]",
+        components: [
+          { name: "schemaUid", type: "bytes32" },
+          { name: "recipient", type: "address" },
+          { name: "data", type: "bytes" },
+          { name: "expiresAt", type: "uint256" },
+          { name: "refUid", type: "bytes32" },
+        ],
+      },
+    ],
+    outputs: [{ name: "uids", type: "bytes32[]" }],
+  },
+  {
+    name: "multiRevoke",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "attestationUids", type: "bytes32[]" }],
+    outputs: [],
+  },
+  // Extended Verification
+  {
+    name: "multiVerify",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "uids", type: "bytes32[]" }],
+    outputs: [{ name: "results", type: "bool[]" }],
+  },
+  {
+    name: "verifyFull",
+    type: "function",
+    stateMutability: "view",
+    inputs: [
+      { name: "attestationUid", type: "bytes32" },
+      { name: "originalData", type: "bytes" },
+    ],
+    outputs: [
+      { name: "valid", type: "bool" },
+      { name: "dataIntact", type: "bool" },
+      {
+        name: "a",
+        type: "tuple",
+        components: [
+          { name: "uid", type: "bytes32" },
+          { name: "schemaUid", type: "bytes32" },
+          { name: "issuer", type: "address" },
+          { name: "recipient", type: "address" },
+          { name: "data", type: "bytes" },
+          { name: "dataHash", type: "bytes32" },
+          { name: "issuedAt", type: "uint256" },
+          { name: "expiresAt", type: "uint256" },
+          { name: "revoked", type: "bool" },
+          { name: "refUid", type: "bytes32" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "isAttestationValid",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "uid", type: "bytes32" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    name: "blake2Hash128",
+    type: "function",
+    stateMutability: "pure",
+    inputs: [{ name: "data", type: "bytes" }],
+    outputs: [{ name: "", type: "bytes32" }],
+  },
   // Events
   {
     name: "SchemaRegistered",
@@ -220,6 +417,31 @@ export const DOTVERIFY_ABI = [
     inputs: [
       { name: "uid", type: "bytes32", indexed: true },
       { name: "revoker", type: "address", indexed: true },
+    ],
+  },
+  {
+    name: "IssuerRegistered",
+    type: "event",
+    inputs: [
+      { name: "issuer", type: "address", indexed: true },
+      { name: "name", type: "string", indexed: false },
+      { name: "substrateId", type: "bytes32", indexed: false },
+    ],
+  },
+  {
+    name: "DelegateAdded",
+    type: "event",
+    inputs: [
+      { name: "issuer", type: "address", indexed: true },
+      { name: "delegate", type: "address", indexed: true },
+    ],
+  },
+  {
+    name: "DelegateRemoved",
+    type: "event",
+    inputs: [
+      { name: "issuer", type: "address", indexed: true },
+      { name: "delegate", type: "address", indexed: true },
     ],
   },
 ] as const;
