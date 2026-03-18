@@ -1,4 +1,4 @@
-# DotVerify
+# PolkaProve
 
 **On-chain attestation and credential verification for Polkadot Hub** — register schemas, issue verifiable credentials, and verify them cross-chain with PVM-native cryptography.
 
@@ -24,13 +24,13 @@ Existing on-chain attestation protocols (EAS, Verax) run on standard EVM chains 
 4. No protection against proxy/relay attacks on credential issuance
 5. No awareness of Polkadot-specific concepts like existential deposits or 2D weight
 
-DotVerify solves all five natively on Polkadot Hub PVM.
+PolkaProve solves all five natively on Polkadot Hub PVM.
 
 ---
 
 ## Why PVM? (Not Possible on Standard EVM)
 
-DotVerify's smart contract uses **6 PVM-exclusive precompiles** from two interfaces:
+PolkaProve's smart contract uses **6 PVM-exclusive precompiles** from two interfaces:
 
 | Feature | Precompile | Standard EVM? | What it enables |
 |---------|-----------|:---:|----------------|
@@ -50,7 +50,7 @@ On Ethereum or any standard EVM L2, none of these features exist.
 ```
                                     Polkadot Hub Testnet
                                    ┌──────────────────────┐
-                                   │    DotVerify.sol      │
+                                   │    PolkaProve.sol      │
                                    │                      │
                                    │  SchemaRegistry ◄────┼── registerSchema
                                    │  Attestations  ◄────┼── attest / attestSecure
@@ -118,7 +118,7 @@ On Ethereum or any standard EVM L2, none of these features exist.
 
 ## Smart Contract
 
-**[`DotVerify.sol`](contracts/src/DotVerify.sol)** — deployed on Polkadot Hub Testnet.
+**[`PolkaProve.sol`](contracts/src/PolkaProve.sol)** — deployed on Polkadot Hub Testnet.
 
 ```solidity
 // PVM precompile interfaces
@@ -225,12 +225,12 @@ forge script script/Deploy.s.sol \
 dotverify/
 ├── contracts/                 Foundry project
 │   ├── src/
-│   │   ├── DotVerify.sol            Main contract (480+ lines)
+│   │   ├── PolkaProve.sol            Main contract (480+ lines)
 │   │   └── interfaces/
 │   │       ├── ISystem.sol          PVM System precompile (0x900)
 │   │       └── IXcm.sol             PVM XCM precompile (0xA0000)
 │   ├── test/
-│   │   └── DotVerify.t.sol          51 tests (schema, attest, revoke, resolver, delegate, batch, sr25519, XCM, fuzz)
+│   │   └── PolkaProve.t.sol          51 tests (schema, attest, revoke, resolver, delegate, batch, sr25519, XCM, fuzz)
 │   └── script/
 │       └── Deploy.s.sol             Deployment script
 ├── frontend/                  Next.js 16 + React 19
@@ -273,7 +273,7 @@ dotverify/
 - Attestation explorer (search by issuer, recipient, schema)
 
 ### Phase 3 — Ecosystem Integration
-- SDK for dApps to integrate DotVerify verification
+- SDK for dApps to integrate PolkaProve verification
 - XCM attestation relay to Moonbeam, Astar, and other parachains
 - Resolver library (payment-gated attestations, token-gated schemas, DAO-vote resolvers)
 - Mainnet deployment on Polkadot Hub

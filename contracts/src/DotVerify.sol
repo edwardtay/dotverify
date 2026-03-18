@@ -14,12 +14,12 @@ interface ISchemaResolver {
     function onRevoke(bytes32 attestationUid, address revoker) external returns (bool);
 }
 
-/// @title DotVerify — On-chain Attestation & Credential Verification for Polkadot Hub
+/// @title PolkaProve — On-chain Attestation & Credential Verification for Polkadot Hub
 /// @notice Full EAS-equivalent attestation protocol with deep PVM precompile integration.
 ///         Schema resolvers, delegated attestations, batch ops, issuer registry, BLAKE2/sr25519/XCM.
 /// @dev Leverages ALL Polkadot Hub precompiles: IXcm (0xA0000) send/execute/weighMessage,
 ///      ISystem (0x900) sr25519Verify/BLAKE2/weightLeft/callerIsOrigin/ecdsaToEthAddress/toAccountId.
-contract DotVerify is Ownable, ReentrancyGuard, Pausable {
+contract PolkaProve is Ownable, ReentrancyGuard, Pausable {
     IXcm public constant xcm = IXcm(XCM_PRECOMPILE_ADDRESS);
     ISystem public constant system = ISystem(SYSTEM_ADDR);
 
@@ -256,7 +256,7 @@ contract DotVerify is Ownable, ReentrancyGuard, Pausable {
         uint256 expiresAt,
         bytes32 refUid
     ) external whenNotPaused returns (bytes32 uid) {
-        require(system.callerIsOrigin(), "DotVerify: must be direct caller");
+        require(system.callerIsOrigin(), "PolkaProve: must be direct caller");
         return _attest(schemaUid, msg.sender, recipient, data, expiresAt, refUid);
     }
 
@@ -274,7 +274,7 @@ contract DotVerify is Ownable, ReentrancyGuard, Pausable {
         require(schemas[schemaUid].createdAt > 0, "schema not found");
 
         bytes memory message = abi.encodePacked(
-            "DotVerify:attest:",
+            "PolkaProve:attest:",
             block.chainid,
             msg.sender,
             schemaUid, recipient, data, expiresAt

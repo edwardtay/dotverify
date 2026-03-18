@@ -5,13 +5,13 @@ import "forge-std/Script.sol";
 import "../src/DotVerify.sol";
 import "../src/resolvers/ExampleResolvers.sol";
 
-contract DeployDotVerify is Script {
+contract DeployPolkaProve is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        DotVerify dv = new DotVerify();
-        console.log("DotVerify deployed at:", address(dv));
+        PolkaProve dv = new PolkaProve();
+        console.log("PolkaProve deployed at:", address(dv));
 
         AllowlistResolver resolver = new AllowlistResolver();
         console.log("AllowlistResolver deployed at:", address(resolver));

@@ -50,9 +50,9 @@ export function Sr25519Attest() {
     const dataHex = toHex(new TextEncoder().encode(dataStr));
 
     // Construct the message that the contract expects:
-    // abi.encodePacked("DotVerify:attest:", block.chainid, msg.sender, schemaUid, recipient, data, expiresAt)
+    // abi.encodePacked("PolkaProve:attest:", block.chainid, msg.sender, schemaUid, recipient, data, expiresAt)
     const message = [
-      "DotVerify:attest:",
+      "PolkaProve:attest:",
       chainId.toString(),
       evmAddress.toLowerCase(),
       schemaUid,

@@ -58,53 +58,17 @@ export default function LandingPage() {
           <p className="text-[10px] text-muted-foreground mt-2">No wallet needed to verify</p>
         </section>
 
-        {/* Role cards */}
-        <section className="px-4 pb-16 max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              {
-                title: "Issue",
-                desc: "Create and manage credentials",
-                href: "/app?role=issuer",
-                color: "#E6007A",
-                bg: "bg-[#E6007A]/5",
-                border: "border-[#E6007A]/20",
-              },
-              {
-                title: "Verify",
-                desc: "Check any credential instantly",
-                href: "/app?role=verifier",
-                color: "#2563eb",
-                bg: "bg-blue-50",
-                border: "border-blue-200",
-              },
-              {
-                title: "View",
-                desc: "See credentials issued to you",
-                href: "/app?role=holder",
-                color: "#16a34a",
-                bg: "bg-green-50",
-                border: "border-green-200",
-              },
-            ].map((role) => (
-              <Link
-                key={role.title}
-                href={role.href}
-                className={`${role.bg} border ${role.border} rounded-xl p-5 hover:shadow-md transition-all group text-center`}
-              >
-                <h3 className="font-bold text-base mb-1" style={{ color: role.color }}>
-                  {role.title}
-                </h3>
-                <p className="text-xs text-muted-foreground mb-3">{role.desc}</p>
-                <span className="text-xs font-medium group-hover:underline" style={{ color: role.color }}>
-                  Get started →
-                </span>
-              </Link>
-            ))}
-          </div>
+        {/* Single CTA */}
+        <section className="px-4 pb-16 max-w-5xl mx-auto text-center">
+          <Link
+            href="/app"
+            className="inline-block px-8 py-3 bg-[#E6007A] text-white rounded-xl text-sm font-medium hover:bg-[#c40066] transition-colors shadow-sm"
+          >
+            Open App →
+          </Link>
         </section>
 
-        {/* Use cases — compact */}
+        {/* What you can do */}
         <section className="px-4 pb-12 max-w-5xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[

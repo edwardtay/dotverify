@@ -1,4 +1,4 @@
-# DotVerify — On-chain Attestation & Credential Verification for Polkadot Hub
+# PolkaProve — On-chain Attestation & Credential Verification for Polkadot Hub
 
 ## Hackathon
 OpenGuild Polkadot Hackathon — PVM Track (EVM on Polkadot)

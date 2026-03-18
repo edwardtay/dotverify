@@ -57,7 +57,7 @@ export function XcmVerify() {
     // SCALE-encoded XCM message with attestation verification result
     // In production: proper XCM Transact or ReportHolding instruction
     const payload = JSON.stringify({
-      type: "DotVerify:attestation_status",
+      type: "PolkaProve:attestation_status",
       uid: uid,
       valid: valid,
       timestamp: Math.floor(Date.now() / 1000),
@@ -173,7 +173,7 @@ export function XcmVerify() {
               <p className="font-medium text-[10px] mb-1">XCM Destination:</p>
               <p className="mb-2">{`{ parents: 1, interior: X1(Parachain(${selectedParachain})) }`}</p>
               <p className="font-medium text-[10px] mb-1">XCM Payload:</p>
-              <p>{`{ type: "DotVerify:attestation_status", uid: "${attestationUid.slice(0, 18)}...", valid: ${isValid ?? "unknown"}, source_chain: 420420417 }`}</p>
+              <p>{`{ type: "PolkaProve:attestation_status", uid: "${attestationUid.slice(0, 18)}...", valid: ${isValid ?? "unknown"}, source_chain: 420420417 }`}</p>
               <p className="mt-2 font-medium text-[10px]">Precompile:</p>
               <p>IXcm(0xA0000).send(destination, message)</p>
             </div>

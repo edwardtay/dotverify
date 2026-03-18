@@ -23,10 +23,8 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-export function Dashboard({ defaultTab }: { defaultTab?: string }) {
-  const [activeTab, setActiveTab] = useState<TabId>(
-    (defaultTab && TABS.some((t) => t.id === defaultTab) ? defaultTab : "Schemas") as TabId
-  );
+export function Dashboard() {
+  const [activeTab, setActiveTab] = useState<TabId>("Schemas");
   const { address } = useAccount();
 
   return (

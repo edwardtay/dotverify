@@ -68,7 +68,7 @@ export function CredentialCard({
           <div>
             <div className="flex items-center gap-1.5 mb-1">
               <span className="w-2.5 h-2.5 rounded-full bg-[#E6007A]" />
-              <span className="text-xs font-bold tracking-tight">DotVerify</span>
+              <span className="text-xs font-bold tracking-tight">PolkaProve</span>
             </div>
             <h3 className="text-base font-bold">{schemaName}</h3>
           </div>

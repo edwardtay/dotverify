@@ -31,8 +31,8 @@ contract RejectResolver is ISchemaResolver {
     }
 }
 
-contract DotVerifyTest is Test {
-    DotVerify public dv;
+contract PolkaProveTest is Test {
+    PolkaProve public dv;
     MockResolver public mockResolver;
     RejectResolver public rejectResolver;
     address public alice = address(0xA11CE);
@@ -52,7 +52,7 @@ contract DotVerifyTest is Test {
     }
 
     function setUp() public {
-        dv = new DotVerify();
+        dv = new PolkaProve();
         mockResolver = new MockResolver();
         rejectResolver = new RejectResolver();
 
@@ -80,7 +80,7 @@ contract DotVerifyTest is Test {
         bytes32 uid = dv.registerSchema("Diploma", "name:string,degree:string", true);
         assertTrue(uid != bytes32(0));
         assertEq(dv.getSchemaCount(), 1);
-        DotVerify.Schema memory s = dv.getSchema(uid);
+        PolkaProve.Schema memory s = dv.getSchema(uid);
         assertEq(s.creator, alice);
         assertEq(s.name, "Diploma");
         assertTrue(s.revocable);
@@ -91,7 +91,7 @@ contract DotVerifyTest is Test {
         _mockBlakeUnique();
         vm.prank(alice);
         bytes32 uid = dv.registerSchema("WithResolver", "data:string", true, address(mockResolver));
-        DotVerify.Schema memory s = dv.getSchema(uid);
+        PolkaProve.Schema memory s = dv.getSchema(uid);
         assertEq(s.resolver, address(mockResolver));
     }
 
@@ -115,7 +115,7 @@ contract DotVerifyTest is Test {
     function test_registerIssuer() public {
         vm.prank(alice);
         dv.registerIssuer("Alice University");
-        DotVerify.Issuer memory iss = dv.getIssuer(alice);
+        PolkaProve.Issuer memory iss = dv.getIssuer(alice);
         assertTrue(iss.registered);
         assertEq(iss.name, "Alice University");
         assertEq(iss.attestationsMade, 0);
@@ -141,7 +141,7 @@ contract DotVerifyTest is Test {
         vm.prank(alice);
         dv.attest(schemaUid, bob, abi.encode("Bob"), 0, bytes32(0));
 
-        DotVerify.Issuer memory iss = dv.getIssuer(alice);
+        PolkaProve.Issuer memory iss = dv.getIssuer(alice);
         assertEq(iss.attestationsMade, 1);
     }
 
@@ -168,7 +168,7 @@ contract DotVerifyTest is Test {
         vm.prank(alice);
         bytes32 attUid = dv.attest(schemaUid, bob, abi.encode("Bob"), 0, bytes32(0));
 
-        (bool valid, DotVerify.Attestation memory a) = dv.verify(attUid);
+        (bool valid, PolkaProve.Attestation memory a) = dv.verify(attUid);
         assertTrue(valid);
         assertTrue(a.dataHash != bytes32(0));
     }
@@ -195,7 +195,7 @@ contract DotVerifyTest is Test {
         bytes32 schemaUid = dv.registerSchema("ID", "name:string", true);
 
         vm.prank(alice);
-        vm.expectRevert("DotVerify: must be direct caller");
+        vm.expectRevert("PolkaProve: must be direct caller");
         dv.attestSecure(schemaUid, bob, abi.encode("data"), 0, bytes32(0));
     }
 
@@ -270,7 +270,7 @@ contract DotVerifyTest is Test {
         bytes32 uid = dv.attestDelegated(alice, schemaUid, charlie, abi.encode("Charlie"), 0, bytes32(0));
         assertTrue(uid != bytes32(0));
 
-        (bool valid, DotVerify.Attestation memory a) = dv.verify(uid);
+        (bool valid, PolkaProve.Attestation memory a) = dv.verify(uid);
         assertTrue(valid);
         assertEq(a.issuer, alice); // Issuer is Alice, not Bob
     }
@@ -315,7 +315,7 @@ contract DotVerifyTest is Test {
         vm.prank(alice);
         bytes32 attUid = dv.attest(schemaUid, bob, abi.encode("Bob"), 0, bytes32(0));
 
-        (bool valid, DotVerify.Attestation memory a) = dv.verify(attUid);
+        (bool valid, PolkaProve.Attestation memory a) = dv.verify(attUid);
         assertTrue(valid);
         assertEq(a.issuer, alice);
     }
@@ -424,10 +424,10 @@ contract DotVerifyTest is Test {
         vm.prank(alice);
         bytes32 schemaUid = dv.registerSchema("ID", "name:string", true);
 
-        DotVerify.AttestationRequest[] memory reqs = new DotVerify.AttestationRequest[](3);
-        reqs[0] = DotVerify.AttestationRequest(schemaUid, bob, abi.encode("1"), 0, bytes32(0));
-        reqs[1] = DotVerify.AttestationRequest(schemaUid, charlie, abi.encode("2"), 0, bytes32(0));
-        reqs[2] = DotVerify.AttestationRequest(schemaUid, alice, abi.encode("3"), 0, bytes32(0));
+        PolkaProve.AttestationRequest[] memory reqs = new PolkaProve.AttestationRequest[](3);
+        reqs[0] = PolkaProve.AttestationRequest(schemaUid, bob, abi.encode("1"), 0, bytes32(0));
+        reqs[1] = PolkaProve.AttestationRequest(schemaUid, charlie, abi.encode("2"), 0, bytes32(0));
+        reqs[2] = PolkaProve.AttestationRequest(schemaUid, alice, abi.encode("3"), 0, bytes32(0));
 
         vm.prank(alice);
         bytes32[] memory uids = dv.multiAttest(reqs);

@@ -246,7 +246,7 @@ export default function VerifyPage() {
             )}
 
             <p className="text-center text-[10px] text-muted-foreground mt-6">
-              Read directly from DotVerify contract on Polkadot Hub Testnet.
+              Read directly from PolkaProve contract on Polkadot Hub Testnet.
               No wallet connection required.
             </p>
           </>

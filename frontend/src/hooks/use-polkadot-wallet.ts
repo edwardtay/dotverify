@@ -36,7 +36,7 @@ export function usePolkadotWallet() {
     try {
       const { web3Enable, web3Accounts } = await import("@polkadot/extension-dapp");
 
-      const extensions = await web3Enable("DotVerify");
+      const extensions = await web3Enable("PolkaProve");
 
       if (extensions.length === 0) {
         setError("No Polkadot wallet found. Install SubWallet, Talisman, or Polkadot.js extension.");

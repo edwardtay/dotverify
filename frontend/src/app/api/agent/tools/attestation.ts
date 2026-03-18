@@ -141,7 +141,7 @@ export const definitions: ToolDef[] = [
   {
     name: "get_attestation_stats",
     description:
-      "Get real-time on-chain statistics about the DotVerify protocol — number of registered schemas and total attestations.",
+      "Get real-time on-chain statistics about the PolkaProve protocol — number of registered schemas and total attestations.",
     input_schema: {
       type: "object",
       properties: {},
@@ -174,7 +174,7 @@ export const definitions: ToolDef[] = [
   {
     name: "explain_pvm_features",
     description:
-      "Explain how DotVerify uses PVM precompiles that are impossible on standard EVM chains.",
+      "Explain how PolkaProve uses PVM precompiles that are impossible on standard EVM chains.",
     input_schema: {
       type: "object",
       properties: {},
@@ -273,7 +273,7 @@ export async function execute(
         ]);
 
         return [
-          `## DotVerify Protocol Stats`,
+          `## PolkaProve Protocol Stats`,
           ``,
           `| Metric | Value |`,
           `|--------|-------|`,
@@ -406,7 +406,7 @@ export async function execute(
     // explain_pvm_features — static (no on-chain needed)
     // ------------------------------------------------------------------
     case "explain_pvm_features": {
-      return `DotVerify uses 6 PVM-exclusive precompiles that are IMPOSSIBLE on standard EVM:
+      return `PolkaProve uses 6 PVM-exclusive precompiles that are IMPOSSIBLE on standard EVM:
 
 1. **BLAKE2-256 Attestation Hashing** (ISystem 0x900)
    All attestation and schema UIDs use Polkadot-native BLAKE2-256 instead of keccak256. This ensures compatibility with Substrate's native hashing and provides attestation integrity verification.

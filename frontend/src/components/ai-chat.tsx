@@ -7,7 +7,7 @@ const QUICK_QUERIES = [
   "List available schemas",
   "How does BLAKE2 attestation hashing work?",
   "Help me create a schema for diplomas",
-  "What PVM features does DotVerify use?",
+  "What PVM features does PolkaProve use?",
 ];
 
 export function AiChat({ address }: { address?: `0x${string}` }) {
@@ -39,7 +39,7 @@ export function AiChat({ address }: { address?: `0x${string}` }) {
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-lg font-bold mb-2">DotVerify AI</p>
+            <p className="text-lg font-bold mb-2">PolkaProve AI</p>
             <p className="text-xs text-muted-foreground mb-6">
               Ask about attestation schemas, credential verification, or PVM features.
             </p>
