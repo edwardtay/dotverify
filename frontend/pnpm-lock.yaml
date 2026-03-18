@@ -20,9 +20,9 @@ importers:
       '@primuslabs/network-js-sdk':
         specifier: ^0.1.9
         version: 0.1.9(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)
-      '@primuslabs/zktls-core-sdk':
-        specifier: ^0.2.6
-        version: 0.2.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+      '@primuslabs/zktls-js-sdk':
+        specifier: ^0.3.10
+        version: 0.3.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)
       '@radix-ui/react-dialog':
         specifier: ^1.1.14
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1004,9 +1004,6 @@ packages:
 
   '@primuslabs/network-js-sdk@0.1.9':
     resolution: {integrity: sha512-TSkjr+sI6qZYdymXmzly84X1x2AeeeuPX3itv+Njrg3/kkTUwM+J5E6FvbCYfKR9Co8JZ4Udc9qGXXvmBm9jiA==}
-
-  '@primuslabs/zktls-core-sdk@0.2.6':
-    resolution: {integrity: sha512-DlXzHca+YkXUp8Qr7995vbCbOnv6gvlt2cQtV4w2TaMbV/OJurVlPTIqFxHbDcU1mYRxZEK/e+lCGJlP0fECSQ==}
 
   '@primuslabs/zktls-js-sdk@0.3.10':
     resolution: {integrity: sha512-R/cSGTDNo1b1HEafXMxai4bg9aM/zmODEG01/8Lb4CQG8aGK5zydfNb3Yu+Eo4VJ4elCeKjJXAL4QVP8eYWw3A==}
@@ -3611,10 +3608,6 @@ packages:
   node-addon-api@2.0.2:
     resolution: {integrity: sha512-Ntyt4AIXyaLIuMHF6IOoTakB3K+RWxwtsHNRxllEoA6vPwP9o4866g6YWDLUdnucilZhmkxiHwHr11gAENw+QA==}
 
-  node-addon-api@8.6.0:
-    resolution: {integrity: sha512-gBVjCaqDlRUk0EwoPNKzIr9KkS9041G/q31IBShPs1Xz6UTA+EXdZADbzqAJQrpDRq71CIMnOP5VMut3SL0z5Q==}
-    engines: {node: ^18 || ^20 || >= 21}
-
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
@@ -6208,16 +6201,6 @@ snapshots:
       - bufferutil
       - encoding
       - typescript
-      - utf-8-validate
-
-  '@primuslabs/zktls-core-sdk@0.2.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)':
-    dependencies:
-      ethers: 5.7.2(bufferutil@4.1.0)(utf-8-validate@6.0.6)
-      node-addon-api: 8.6.0
-      uuid: 11.1.0
-      ws: 8.19.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
-    transitivePeerDependencies:
-      - bufferutil
       - utf-8-validate
 
   '@primuslabs/zktls-js-sdk@0.3.10(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)':
@@ -9765,8 +9748,6 @@ snapshots:
       - supports-color
 
   node-addon-api@2.0.2: {}
-
-  node-addon-api@8.6.0: {}
 
   node-domexception@1.0.0: {}
 
