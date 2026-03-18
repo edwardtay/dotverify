@@ -191,9 +191,27 @@ export function ZkTlsProve() {
         <h2 className="font-semibold text-sm">zkTLS Verified Proofs</h2>
         <span className="text-[9px] bg-[#E6007A] text-white px-1.5 py-0.5 rounded">LIVE</span>
       </div>
-      <p className="text-[10px] text-muted-foreground mb-4">
+      <p className="text-[10px] text-muted-foreground mb-3">
         Cryptographically prove data from real websites. A Primus attestor verifies the TLS session — no way to fake it.
       </p>
+
+      {/* Prerequisites */}
+      {flow === "idle" && (
+        <div className="bg-white border border-border rounded-lg p-3 mb-4">
+          <p className="text-[10px] font-medium mb-1.5">Before you start:</p>
+          <ol className="text-[10px] text-muted-foreground space-y-1 list-decimal list-inside">
+            <li>
+              Install the{" "}
+              <a href="https://chromewebstore.google.com/detail/primus/oeiomhmbaapihbilkfkhmlajkeegnjhe" target="_blank" rel="noopener noreferrer" className="text-[#E6007A] underline">
+                Primus Chrome extension
+              </a>
+            </li>
+            <li>Connect your wallet (top right)</li>
+            <li>Select a proof type below</li>
+            <li>You&apos;ll be asked to log into the data source (e.g. Binance) — the attestor verifies the session without seeing your password</li>
+          </ol>
+        </div>
+      )}
 
       {/* Template picker */}
       {flow === "idle" && (
@@ -365,9 +383,18 @@ export function ZkTlsProve() {
       {/* Error */}
       {flow === "error" && (
         <div className="bg-white border border-amber-200 rounded-xl p-4">
-          <p className="text-xs font-medium text-amber-700 mb-1">zkTLS attestation needs authentication</p>
-          <p className="text-[10px] text-amber-600 mb-2">{errorMsg}</p>
-          <button onClick={() => setFlow("idle")} className="text-xs text-[#E6007A] hover:underline">Try again</button>
+          <p className="text-xs font-medium text-amber-700 mb-1">Could not complete attestation</p>
+          <p className="text-[10px] text-amber-600 mb-3 font-mono">{errorMsg}</p>
+          <div className="text-[10px] text-muted-foreground space-y-1 mb-3">
+            <p className="font-medium">Common fixes:</p>
+            <ul className="list-disc list-inside space-y-0.5">
+              <li>Make sure the <a href="https://chromewebstore.google.com/detail/primus/oeiomhmbaapihbilkfkhmlajkeegnjhe" target="_blank" rel="noopener noreferrer" className="text-[#E6007A] underline">Primus extension</a> is installed and enabled</li>
+              <li>Log into {template?.source || "the data source"} in your browser first</li>
+              <li>Allow popups for this site</li>
+              <li>Try a different browser if using Brave (shield may block)</li>
+            </ul>
+          </div>
+          <button onClick={() => { setFlow("idle"); setSelectedTemplate(null); setErrorMsg(""); }} className="text-xs text-[#E6007A] hover:underline">Try again</button>
         </div>
       )}
 
