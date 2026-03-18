@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from "wagmi";
+import { toHex } from "viem";
 import { DOTVERIFY_ABI, DOTVERIFY_ADDRESS } from "@/config/contract";
 
 const CREDENTIAL_STYLES: Record<string, { gradient: string; icon: string; label: string }> = {
@@ -162,7 +163,7 @@ export function SbtCredential() {
           {step === "done" && txHash && (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
               <p className="text-sm font-medium text-green-700 mb-1">Credential Minted!</p>
-              <p className="font-mono text-[10px] text-green-600">Tx: {txHash}</p>
+              <a href={`https://blockscout-testnet.polkadot.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] text-green-600 underline hover:text-green-800 break-all block">Tx: {txHash}</a>
               <p className="text-[10px] text-muted-foreground mt-1">Your soulbound credential is permanently linked to your wallet.</p>
               <button onClick={() => { setStep("select"); setSelectedProof(null); }} className="mt-2 text-xs text-green-700 underline">Mint another</button>
             </div>
@@ -172,6 +173,81 @@ export function SbtCredential() {
 
       {proofs.length === 0 && (
         <p className="text-xs text-muted-foreground text-center py-4">Create a proof first, then mint it as a credential.</p>
+      )}
+
+      {/* Composite Proof */}
+      {proofs.length >= 2 && (
+        <CompositeProof proofs={proofs} address={address} />
+      )}
+    </div>
+  );
+}
+
+function CompositeProof({ proofs, address }: { proofs: { txHash: string; summary: string; type?: string; privacyMode?: boolean }[]; address?: string }) {
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [lastTx, setLastTx] = useState<string | null>(null);
+  const { writeContract, data: txHash, isPending } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
+
+  function toggle(i: number) {
+    setSelected((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  }
+
+  function handleCombine() {
+    if (!DOTVERIFY_ADDRESS || !address || selected.size < 2) return;
+    const payload = JSON.stringify({
+      type: "composite",
+      proofs: Array.from(selected).map((i) => ({ type: proofs[i].type, txHash: proofs[i].txHash, summary: proofs[i].summary })),
+      prover: address,
+      timestamp: Math.floor(Date.now() / 1000),
+    });
+    writeContract({
+      address: DOTVERIFY_ADDRESS,
+      abi: DOTVERIFY_ABI,
+      functionName: "anchorOffchain",
+      args: [toHex(new TextEncoder().encode(payload)) as `0x${string}`],
+    });
+  }
+
+  if (isSuccess && txHash && txHash !== lastTx && address) {
+    setLastTx(txHash);
+    setSelected(new Set());
+    try {
+      const key = `polkaprove-proofs-${address}`;
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      existing.push({ type: "composite", txHash, timestamp: Date.now(), summary: `Composite (${selected.size} combined)` });
+      localStorage.setItem(key, JSON.stringify(existing));
+    } catch {}
+  }
+
+  return (
+    <div className="border border-[#E6007A]/20 bg-[#E6007A]/[0.03] rounded-xl p-5">
+      <h3 className="text-sm font-bold mb-1">Composite Credential</h3>
+      <p className="text-[10px] text-muted-foreground mb-3">Combine multiple proofs into one credential — e.g., "KYC verified AND active trader."</p>
+
+      <div className="space-y-2 max-h-40 overflow-y-auto mb-3">
+        {proofs.map((p: { txHash: string; summary: string; type?: string; privacyMode?: boolean }, i: number) => (
+          <label key={i} className={`flex items-center gap-3 p-2.5 border rounded-lg cursor-pointer transition-all ${selected.has(i) ? "border-[#E6007A] bg-[#E6007A]/5" : "border-border hover:border-[#E6007A]/30"}`}>
+            <input type="checkbox" checked={selected.has(i)} onChange={() => toggle(i)} className="w-3.5 h-3.5 accent-[#E6007A]" />
+            <span className="text-[10px] truncate flex-1">{p.summary}</span>
+            {p.privacyMode && <span className="text-[8px] bg-[#E6007A]/10 text-[#E6007A] px-1 py-0.5 rounded">PRIVATE</span>}
+          </label>
+        ))}
+      </div>
+
+      <button
+        onClick={handleCombine}
+        disabled={selected.size < 2 || isPending || isConfirming}
+        className="w-full px-4 py-2 bg-[#E6007A] text-white rounded-lg text-xs font-medium hover:bg-[#c40066] transition-colors disabled:opacity-50"
+      >
+        {isPending ? "Signing..." : isConfirming ? "Anchoring..." : `Combine ${selected.size} Proofs`}
+      </button>
+
+      {isSuccess && txHash && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-3">
+          <p className="text-xs font-medium text-green-700">Composite Credential Anchored!</p>
+          <a href={`https://blockscout-testnet.polkadot.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] text-green-600 underline break-all block">Tx: {txHash}</a>
+        </div>
       )}
     </div>
   );
