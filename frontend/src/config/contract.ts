@@ -468,6 +468,41 @@ export const DOTVERIFY_ABI = [
     inputs: [{ name: "user", type: "address" }],
     outputs: [{ name: "", type: "bytes32[]" }],
   },
+  // Soulbound Credential Tokens
+  {
+    name: "mintSBT",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "anchorId", type: "bytes32" },
+      { name: "credentialType", type: "string" },
+    ],
+    outputs: [{ name: "tokenId", type: "uint256" }],
+  },
+  {
+    name: "hasCredential",
+    type: "function",
+    stateMutability: "view",
+    inputs: [
+      { name: "holder", type: "address" },
+      { name: "credentialType", type: "string" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    name: "getHolderTokens",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "holder", type: "address" }],
+    outputs: [{ name: "", type: "uint256[]" }],
+  },
+  {
+    name: "sbtNextId",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+  },
   // Events
   {
     name: "SchemaRegistered",

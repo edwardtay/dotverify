@@ -4,12 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProveTab } from "./prove-tab";
 import { MyProofsTab } from "./my-proofs-tab";
+import { SbtCredential } from "./sbt-credential";
 import { VerifyTab } from "./verify-tab";
 
 const TABS = [
-  { id: "Prove", label: "Prove", icon: "\u25C8" },
-  { id: "MyProofs", label: "My Proofs", icon: "\u25CE" },
-  { id: "Verify", label: "Verify", icon: "\u2713" },
+  { id: "Prove", label: "Prove", icon: "◈" },
+  { id: "MyProofs", label: "My Proofs", icon: "◎" },
+  { id: "Credentials", label: "Credentials", icon: "◆" },
+  { id: "Verify", label: "Verify", icon: "✓" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -46,6 +48,7 @@ export function Dashboard() {
         >
           {activeTab === "Prove" && <ProveTab />}
           {activeTab === "MyProofs" && <MyProofsTab />}
+          {activeTab === "Credentials" && <SbtCredential />}
           {activeTab === "Verify" && <VerifyTab />}
         </motion.div>
       </AnimatePresence>

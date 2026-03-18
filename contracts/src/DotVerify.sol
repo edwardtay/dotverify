@@ -697,6 +697,61 @@ contract PolkaProve is Ownable, ReentrancyGuard, Pausable {
     }
 
     // =========================================================================
+    // Soulbound Credential Token (non-transferable)
+    // =========================================================================
+
+    struct SoulboundToken {
+        address holder;
+        bytes32 anchorId;        // links to off-chain proof anchor
+        string credentialType;   // e.g. "kyc", "trade-history", "investment"
+        uint256 mintedAt;
+    }
+
+    uint256 public sbtNextId;
+    mapping(uint256 => SoulboundToken) public soulboundTokens;
+    mapping(address => uint256[]) public holderTokens;
+
+    event SBTMinted(uint256 indexed tokenId, address indexed holder, bytes32 indexed anchorId, string credentialType);
+
+    /// @notice Mint a soulbound credential token linked to an anchored proof
+    function mintSBT(bytes32 anchorId, string calldata credentialType) external whenNotPaused returns (uint256 tokenId) {
+        // Verify the anchor exists and belongs to the caller
+        OffchainAnchor storage anchor = offchainAnchors[anchorId];
+        require(anchor.anchoredAt > 0, "anchor not found");
+        require(anchor.issuer == msg.sender, "not anchor owner");
+        require(!anchor.revoked, "anchor revoked");
+
+        tokenId = sbtNextId++;
+        soulboundTokens[tokenId] = SoulboundToken({
+            holder: msg.sender,
+            anchorId: anchorId,
+            credentialType: credentialType,
+            mintedAt: block.timestamp
+        });
+        holderTokens[msg.sender].push(tokenId);
+
+        emit SBTMinted(tokenId, msg.sender, anchorId, credentialType);
+    }
+
+    /// @notice Check if an address holds a specific credential type
+    function hasCredential(address holder, string calldata credentialType) external view returns (bool) {
+        uint256[] storage tokens = holderTokens[holder];
+        for (uint256 i = 0; i < tokens.length; i++) {
+            SoulboundToken storage sbt = soulboundTokens[tokens[i]];
+            if (keccak256(bytes(sbt.credentialType)) == keccak256(bytes(credentialType)) &&
+                !offchainAnchors[sbt.anchorId].revoked) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// @notice Get all SBT IDs for a holder
+    function getHolderTokens(address holder) external view returns (uint256[] memory) {
+        return holderTokens[holder];
+    }
+
+    // =========================================================================
     // Admin
     // =========================================================================
 

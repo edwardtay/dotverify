@@ -780,6 +780,83 @@ contract PolkaProveTest is Test {
     }
 
     // =========================================================================
+    // Soulbound Token Tests
+    // =========================================================================
+
+    function test_mintSBT() public {
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 anchorId = dv.anchorOffchain(abi.encode("kyc proof data"));
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        uint256 tokenId = dv.mintSBT(anchorId, "kyc");
+
+        (address holder, bytes32 sbtAnchor, , uint256 mintedAt) = dv.soulboundTokens(tokenId);
+        assertEq(holder, alice);
+        assertEq(sbtAnchor, anchorId);
+        assertTrue(mintedAt > 0);
+    }
+
+    function test_mintSBT_notOwner_reverts() public {
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 anchorId = dv.anchorOffchain(abi.encode("data"));
+
+        vm.prank(bob);
+        vm.expectRevert("not anchor owner");
+        dv.mintSBT(anchorId, "kyc");
+    }
+
+    function test_mintSBT_revokedAnchor_reverts() public {
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 anchorId = dv.anchorOffchain(abi.encode("data"));
+
+        vm.prank(alice);
+        dv.revokeOffchain(anchorId);
+
+        vm.prank(alice);
+        vm.expectRevert("anchor revoked");
+        dv.mintSBT(anchorId, "kyc");
+    }
+
+    function test_hasCredential() public {
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 anchorId = dv.anchorOffchain(abi.encode("trade data"));
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.mintSBT(anchorId, "trader");
+
+        assertTrue(dv.hasCredential(alice, "trader"));
+        assertFalse(dv.hasCredential(alice, "kyc"));
+        assertFalse(dv.hasCredential(bob, "trader"));
+    }
+
+    function test_getHolderTokens() public {
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 a1 = dv.anchorOffchain(abi.encode("proof1"));
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.mintSBT(a1, "kyc");
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 a2 = dv.anchorOffchain(abi.encode("proof2"));
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.mintSBT(a2, "trader");
+
+        uint256[] memory tokens = dv.getHolderTokens(alice);
+        assertEq(tokens.length, 2);
+    }
+
+    // =========================================================================
     // Fuzz Tests
     // =========================================================================
 
