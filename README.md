@@ -9,6 +9,7 @@
 
 **Live:** [polkaprove.vercel.app](https://polkaprove.vercel.app)
 **Contract:** [`0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E`](https://blockscout-testnet.polkadot.io/address/0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E) (verified on Blockscout)
+**NFT:** [`0xB95f94956D62eBBbA836F8676B8586Fcdb8457fD`](https://blockscout-testnet.polkadot.io/token/0xB95f94956D62eBBbA836F8676B8586Fcdb8457fD) — Soulbound ERC-721 with on-chain SVG
 
 ---
 

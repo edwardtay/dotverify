@@ -33,36 +33,15 @@ export default function LandingPage() {
             Prove Web2 Facts.{" "}
             <span className="text-[#E6007A]">On Polkadot.</span>
           </h1>
-          <p className="text-sm text-muted-foreground max-w-lg mx-auto mb-6">
-            Anchor tamper-proof proofs of your bank balance, credentials, social accounts, and more — without revealing sensitive data.
+          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8">
+            Prove your Binance trades, OKX KYC, TikTok balance, and more — privately, on Polkadot Hub.
           </p>
 
-          <div className="max-w-lg mx-auto flex gap-2">
-            <input
-              type="text"
-              value={verifyId}
-              onChange={(e) => setVerifyId(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && verifyId && router.push(`/verify/${verifyId}`)}
-              placeholder="Paste a proof ID to verify..."
-              className="flex-1 border border-border rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#E6007A]/30 focus:border-[#E6007A]"
-            />
-            <button
-              onClick={() => verifyId && router.push(`/verify/${verifyId}`)}
-              disabled={!verifyId}
-              className="px-4 py-2.5 bg-[#E6007A] text-white rounded-lg text-sm font-medium hover:bg-[#c40066] transition-colors disabled:opacity-40"
-            >
-              Verify
-            </button>
-          </div>
-          <p className="text-[10px] text-muted-foreground mt-2">No wallet needed to verify</p>
-        </section>
-
-        <section className="px-4 pb-16 max-w-5xl mx-auto text-center">
           <Link
             href="/app"
             className="inline-block px-8 py-3 bg-[#E6007A] text-white rounded-xl text-sm font-medium hover:bg-[#c40066] transition-colors shadow-sm"
           >
-            Create a Proof →
+            Get Started →
           </Link>
         </section>
 
