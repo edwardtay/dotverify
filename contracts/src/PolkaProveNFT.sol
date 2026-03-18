@@ -66,6 +66,15 @@ contract PolkaProveNFT {
         return string(b);
     }
 
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
+    /// @notice Register an existing SBT to make it visible on explorers
+    function register(uint256 tokenId) external {
+        (address holder,,,) = polkaProve.soulboundTokens(tokenId);
+        require(holder != address(0), "nonexistent");
+        emit Transfer(address(0), holder, tokenId);
+    }
+
     // Soulbound — block all transfers
     function transferFrom(address, address, uint256) external pure { revert("SOULBOUND"); }
     function safeTransferFrom(address, address, uint256) external pure { revert("SOULBOUND"); }
