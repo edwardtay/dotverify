@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { toHex } from "viem";
 import { DOTVERIFY_ABI, DOTVERIFY_ADDRESS } from "@/config/contract";
+import { ZkTlsProve } from "./zktls-prove";
 
 const BLOCKSCOUT_API = "https://blockscout-testnet.polkadot.io/api/v2";
 
@@ -250,6 +251,9 @@ export function ProveTab() {
           <p className="text-sm text-amber-700">Connect your wallet to create proofs.</p>
         </div>
       )}
+
+      {/* SECTION 0: zkTLS Verified Proofs */}
+      <ZkTlsProve />
 
       {/* SECTION 1: Auto-Fetch Polkadot Data */}
       <div>

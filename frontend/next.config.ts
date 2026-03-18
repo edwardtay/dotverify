@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["@primuslabs/zktls-core-sdk"],
 };
 
 export default nextConfig;

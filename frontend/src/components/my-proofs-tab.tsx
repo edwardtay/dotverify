@@ -26,20 +26,22 @@ export function MyProofsTab() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("polkaprove_proofs") || "[]") as ProofRecord[];
+    if (!address) return;
+    const stored = JSON.parse(localStorage.getItem(`polkaprove-proofs-${address}`) || "[]") as ProofRecord[];
     setProofs(stored);
-  }, []);
+  }, [address]);
 
   function handleShare(proof: ProofRecord) {
-    const url = `${window.location.origin}/verify/${proof.txHash}`;
+    const url = `https://blockscout-testnet.polkadot.io/tx/${proof.txHash}`;
     navigator.clipboard.writeText(url);
     setCopiedId(proof.txHash);
     setTimeout(() => setCopiedId(null), 2000);
   }
 
   function handleClearAll() {
+    if (!address) return;
     if (confirm("Clear all saved proofs? This only removes local records — on-chain data is permanent.")) {
-      localStorage.removeItem("polkaprove_proofs");
+      localStorage.removeItem(`polkaprove-proofs-${address}`);
       setProofs([]);
     }
   }
