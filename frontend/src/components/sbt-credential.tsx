@@ -45,14 +45,14 @@ export function SbtCredential() {
 
   function handleMint() {
     if (!selectedProof || !DOTVERIFY_ADDRESS) return;
-    const id = selectedProof.anchorId || selectedProof.txHash;
-    if (!id) return;
+    // Only mint if we have a real anchorId — txHash is NOT a valid anchorId
+    if (!selectedProof.anchorId) return;
     setStep("minting");
     writeContract({
       address: DOTVERIFY_ADDRESS,
       abi: DOTVERIFY_ABI,
       functionName: "mintSBT",
-      args: [id as `0x${string}`, credentialType],
+      args: [selectedProof.anchorId as `0x${string}`, credentialType],
     });
   }
 
@@ -90,11 +90,16 @@ export function SbtCredential() {
               <div>
                 <label className="text-[11px] font-medium text-muted-foreground block mb-1">Select a proof to mint</label>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {proofs.map((p: { txHash: string; summary: string; type: string }, i: number) => (
+                  {proofs.filter((p: { anchorId?: string }) => !!p.anchorId).length === 0 && (
+                    <p className="text-[10px] text-muted-foreground p-3 border border-dashed border-border rounded-xl">
+                      No mintable proofs yet. Create a zkTLS proof first — only proofs with an on-chain anchor ID can be minted.
+                    </p>
+                  )}
+                  {proofs.filter((p: { anchorId?: string }) => !!p.anchorId).map((p: { txHash: string; anchorId?: string; summary: string; type: string }, i: number) => (
                     <label
                       key={i}
                       className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
-                        selectedProof?.txHash === p.txHash
+                        selectedProof?.anchorId === p.anchorId
                           ? "border-[#E6007A] bg-[#E6007A]/5"
                           : "border-border hover:border-[#E6007A]/30"
                       }`}
@@ -102,7 +107,7 @@ export function SbtCredential() {
                       <input
                         type="radio"
                         name="proof"
-                        checked={selectedProof?.txHash === p.txHash}
+                        checked={selectedProof?.anchorId === p.anchorId}
                         onChange={() => setSelectedProof(p)}
                         className="accent-[#E6007A]"
                       />

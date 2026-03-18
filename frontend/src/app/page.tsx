@@ -80,23 +80,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-4 pb-16 max-w-5xl mx-auto">
-          <div className="border border-border rounded-xl p-5 bg-muted/10">
-            <div className="grid grid-cols-4 gap-4 text-center">
-              {[
-                { value: "60", label: "Tests" },
-                { value: "6", label: "PVM Precompiles" },
-                { value: "BLAKE2", label: "Hash Function" },
-                { value: "XCM", label: "Cross-Chain" },
-              ].map((s) => (
-                <div key={s.label}>
-                  <p className="text-lg sm:text-xl font-bold text-[#E6007A]">{s.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />

@@ -5,7 +5,8 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagm
 import { toHex } from "viem";
 import { DOTVERIFY_ABI, DOTVERIFY_ADDRESS } from "@/config/contract";
 
-// zkTLS runs client-side — the JS SDK opens browser popups for user auth
+// Primus JS SDK runs client-side by design — appId/appSecret are project identifiers
+// (not traditional secrets). See: https://docs.primuslabs.xyz/build/for-dapp/example
 const APP_ID = process.env.NEXT_PUBLIC_PRIMUS_APP_ID || "0x4f54bf97c50d2967a9ef769b94c858580d0234db";
 const APP_SECRET = process.env.NEXT_PUBLIC_PRIMUS_APP_SECRET || "0x7f013a5900a0c4725f862acc055aad66d3a9c3e3aee7d651eae7026d1730acdd";
 

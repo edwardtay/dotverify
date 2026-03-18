@@ -102,7 +102,7 @@ function generateSVG(tokenId: number, credType: string, holder: string): string 
 <!-- Verification badge -->
 <rect x="140" y="330" width="120" height="26" rx="13" fill="white" opacity="0.08"/>
 <circle cx="158" cy="343" r="5" fill="#4ADE80" opacity="0.9"/>
-<text x="210" y="347" fill="white" font-family="'Helvetica Neue',Arial,sans-serif" font-size="9" text-anchor="middle" font-weight="500" opacity="0.7" letter-spacing="0.5">zkTLS VERIFIED</text>
+<text x="210" y="347" fill="white" font-family="'Helvetica Neue',Arial,sans-serif" font-size="9" text-anchor="middle" font-weight="500" opacity="0.7" letter-spacing="0.5">VERIFIED</text>
 
 <!-- Bottom divider -->
 <line x1="32" y1="420" x2="368" y2="420" stroke="white" stroke-opacity="0.1" stroke-width="0.5"/>
@@ -145,12 +145,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     const metadata = {
       name: `PolkaProve #${tokenId} — ${credType.toUpperCase()}`,
-      description: `Soulbound credential verified by zkTLS on Polkadot Hub. Type: ${credType}. Non-transferable.`,
+      description: `Soulbound credential on Polkadot Hub. Type: ${credType}. Non-transferable.`,
       image: `data:image/svg+xml;base64,${svgBase64}`,
       attributes: [
         { trait_type: "Credential", value: credType },
         { trait_type: "Chain", value: "Polkadot Hub" },
-        { trait_type: "Verification", value: "zkTLS (Primus)" },
+        { trait_type: "Verification", value: "On-chain anchored" },
         { trait_type: "Transferable", value: "No (Soulbound)" },
       ],
     };
