@@ -51,7 +51,7 @@ function generateSVG(tokenId: number, credType: string, holder: string): string 
 <line x1="30" y1="420" x2="370" y2="420" stroke="white" stroke-opacity="0.15"/>
 <text x="30" y="448" fill="white" font-family="monospace" font-size="11" opacity="0.5">${short}</text>
 <text x="370" y="448" fill="white" font-family="monospace" font-size="11" text-anchor="end" opacity="0.5">Polkadot Hub</text>
-<text x="200" y="480" fill="white" font-family="monospace" font-size="9" text-anchor="middle" opacity="0.3">dotverify.vercel.app</text>
+<text x="200" y="480" fill="white" font-family="monospace" font-size="9" text-anchor="middle" opacity="0.3">polkaprove.vercel.app</text>
 </svg>`;
 }
 

@@ -7,7 +7,7 @@
 ![Next.js](https://img.shields.io/badge/Next.js_16-000?style=flat&logo=next.js&logoColor=white)
 ![Foundry](https://img.shields.io/badge/Foundry-DEA584?style=flat)
 
-**Live:** [dotverify.vercel.app](https://dotverify.vercel.app)
+**Live:** [polkaprove.vercel.app](https://polkaprove.vercel.app)
 **Contract:** [`0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E`](https://blockscout-testnet.polkadot.io/address/0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E) (verified on Blockscout)
 
 ---
