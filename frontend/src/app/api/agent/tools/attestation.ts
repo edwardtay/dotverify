@@ -5,7 +5,7 @@ import type { ToolDef } from "./types";
 const RPC_URL = "https://eth-rpc-testnet.polkadot.io";
 const CONTRACT =
   process.env.NEXT_PUBLIC_DOTVERIFY_ADDRESS ||
-  "0xC3B8399Cd69EC199eD663Ee281d2094dbA48EF7d";
+  "0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E";
 
 // ---------------------------------------------------------------------------
 // Helpers
