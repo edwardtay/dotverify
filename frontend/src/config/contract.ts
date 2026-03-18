@@ -1,4 +1,4 @@
-export const DOTVERIFY_ADDRESS = (process.env.NEXT_PUBLIC_DOTVERIFY_ADDRESS || "0x9FC85713c0764eadA3c60DeB12687101971f8d45") as `0x${string}`;
+export const DOTVERIFY_ADDRESS = (process.env.NEXT_PUBLIC_DOTVERIFY_ADDRESS || "0x5f7D3BF531C2DcF0d7dd791BA38dEE36Dc9A8C9E") as `0x${string}`;
 
 export const DOTVERIFY_ABI = [
   // Schema Registry (3-arg overload, no resolver)
