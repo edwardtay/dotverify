@@ -419,6 +419,55 @@ export const DOTVERIFY_ABI = [
     inputs: [{ name: "anchorId", type: "bytes32" }],
     outputs: [],
   },
+  // Trustless On-Chain Proofs
+  {
+    name: "proveBalance",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [],
+    outputs: [{ name: "proofId", type: "bytes32" }],
+  },
+  {
+    name: "proveTokenBalance",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "token", type: "address" }],
+    outputs: [{ name: "proofId", type: "bytes32" }],
+  },
+  {
+    name: "proveFullState",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [],
+    outputs: [{ name: "proofId", type: "bytes32" }],
+  },
+  {
+    name: "getOnChainProof",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "proofId", type: "bytes32" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "prover", type: "address" },
+          { name: "nativeBalance", type: "uint256" },
+          { name: "blockNumber", type: "uint256" },
+          { name: "timestamp", type: "uint256" },
+          { name: "dataHash", type: "bytes32" },
+          { name: "accountId", type: "bytes32" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "getUserProofs",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "bytes32[]" }],
+  },
   // Events
   {
     name: "SchemaRegistered",

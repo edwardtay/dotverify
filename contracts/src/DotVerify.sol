@@ -580,6 +580,123 @@ contract PolkaProve is Ownable, ReentrancyGuard, Pausable {
     }
 
     // =========================================================================
+    // Trustless On-Chain Proofs (contract reads state directly)
+    // =========================================================================
+
+    struct OnChainProof {
+        address prover;
+        uint256 nativeBalance;     // read by contract via address.balance
+        uint256 blockNumber;
+        uint256 timestamp;
+        bytes32 dataHash;          // BLAKE2 of encoded proof data
+        bytes32 accountId;         // Substrate AccountId32 via toAccountId
+    }
+
+    mapping(bytes32 => OnChainProof) public onChainProofs;
+    mapping(address => bytes32[]) public userProofs;
+
+    event OnChainProofCreated(bytes32 indexed proofId, address indexed prover, uint256 balance, uint256 blockNumber);
+
+    /// @notice Create a trustless balance proof — contract reads msg.sender.balance directly
+    /// @dev This is fully trustless: the balance is read by the contract at execution time,
+    ///      not submitted by the user. Block number + timestamp prove WHEN.
+    ///      BLAKE2 hash proves integrity. Substrate AccountId proves cross-ecosystem identity.
+    function proveBalance() external whenNotPaused returns (bytes32 proofId) {
+        uint256 balance = msg.sender.balance;
+        bytes memory accountIdBytes = system.toAccountId(msg.sender);
+        bytes32 accountId;
+        assembly { accountId := mload(add(accountIdBytes, 32)) }
+
+        bytes memory proofData = abi.encodePacked(
+            msg.sender, balance, block.number, block.timestamp, accountId
+        );
+        bytes32 dataHash = system.hashBlake256(proofData);
+        proofId = system.hashBlake256(abi.encodePacked(msg.sender, dataHash, block.timestamp));
+
+        onChainProofs[proofId] = OnChainProof({
+            prover: msg.sender,
+            nativeBalance: balance,
+            blockNumber: block.number,
+            timestamp: block.timestamp,
+            dataHash: dataHash,
+            accountId: accountId
+        });
+        userProofs[msg.sender].push(proofId);
+
+        emit OnChainProofCreated(proofId, msg.sender, balance, block.number);
+    }
+
+    /// @notice Create a trustless ERC20 token balance proof
+    function proveTokenBalance(address token) external whenNotPaused returns (bytes32 proofId) {
+        // Read token balance directly from the token contract
+        (bool success, bytes memory result) = token.staticcall(
+            abi.encodeWithSignature("balanceOf(address)", msg.sender)
+        );
+        require(success && result.length >= 32, "token read failed");
+        uint256 tokenBalance = abi.decode(result, (uint256));
+
+        bytes memory proofData = abi.encodePacked(
+            msg.sender, token, tokenBalance, block.number, block.timestamp
+        );
+        bytes32 dataHash = system.hashBlake256(proofData);
+        proofId = system.hashBlake256(abi.encodePacked(msg.sender, dataHash, block.timestamp));
+
+        onChainProofs[proofId] = OnChainProof({
+            prover: msg.sender,
+            nativeBalance: tokenBalance,
+            blockNumber: block.number,
+            timestamp: block.timestamp,
+            dataHash: dataHash,
+            accountId: bytes32(uint256(uint160(token)))
+        });
+        userProofs[msg.sender].push(proofId);
+
+        emit OnChainProofCreated(proofId, msg.sender, tokenBalance, block.number);
+    }
+
+    /// @notice Create a proof combining balance + existential deposit + weight (full PVM snapshot)
+    function proveFullState() external whenNotPaused returns (bytes32 proofId) {
+        uint256 balance = msg.sender.balance;
+        uint256 minBalance = system.minimumBalance();
+        (uint64 refTime, uint64 proofSize) = system.weightLeft();
+        bytes32 codeHash = system.ownCodeHash();
+        bool isDirect = system.callerIsOrigin();
+
+        bytes memory accountIdBytes = system.toAccountId(msg.sender);
+        bytes32 accountId;
+        assembly { accountId := mload(add(accountIdBytes, 32)) }
+
+        bytes memory proofData = abi.encodePacked(
+            msg.sender, balance, minBalance, refTime, proofSize,
+            codeHash, isDirect, accountId, block.number, block.timestamp
+        );
+        bytes32 dataHash = system.hashBlake256(proofData);
+        proofId = system.hashBlake256(abi.encodePacked(msg.sender, dataHash, block.timestamp));
+
+        onChainProofs[proofId] = OnChainProof({
+            prover: msg.sender,
+            nativeBalance: balance,
+            blockNumber: block.number,
+            timestamp: block.timestamp,
+            dataHash: dataHash,
+            accountId: accountId
+        });
+        userProofs[msg.sender].push(proofId);
+
+        emit OnChainProofCreated(proofId, msg.sender, balance, block.number);
+    }
+
+    /// @notice Get a proof by ID
+    function getOnChainProof(bytes32 proofId) external view returns (OnChainProof memory) {
+        return onChainProofs[proofId];
+    }
+
+    /// @notice Get all proof IDs for a user
+    function getUserProofs(address user) external view returns (bytes32[] memory) {
+        return userProofs[user];
+    }
+
+    // =========================================================================
     // Admin
     // =========================================================================
 

@@ -724,6 +724,62 @@ contract PolkaProveTest is Test {
     }
 
     // =========================================================================
+    // Trustless On-Chain Proof Tests
+    // =========================================================================
+
+    function test_proveBalance() public {
+        vm.deal(alice, 100 ether);
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 proofId = dv.proveBalance();
+        assertTrue(proofId != bytes32(0));
+
+        PolkaProve.OnChainProof memory proof = dv.getOnChainProof(proofId);
+        assertEq(proof.prover, alice);
+        assertEq(proof.nativeBalance, 100 ether);
+        assertEq(proof.blockNumber, block.number);
+        assertTrue(proof.timestamp > 0);
+        assertTrue(proof.dataHash != bytes32(0));
+    }
+
+    function test_proveBalance_tracksUserProofs() public {
+        vm.deal(alice, 50 ether);
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.proveBalance();
+
+        bytes32[] memory proofs = dv.getUserProofs(alice);
+        assertEq(proofs.length, 1);
+    }
+
+    function test_proveFullState() public {
+        vm.deal(alice, 200 ether);
+        _mockBlakeUnique();
+        vm.prank(alice);
+        bytes32 proofId = dv.proveFullState();
+        assertTrue(proofId != bytes32(0));
+
+        PolkaProve.OnChainProof memory proof = dv.getOnChainProof(proofId);
+        assertEq(proof.prover, alice);
+        assertEq(proof.nativeBalance, 200 ether);
+    }
+
+    function test_multipleProofs() public {
+        vm.deal(alice, 10 ether);
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.proveBalance();
+
+        _mockBlakeUnique();
+        vm.prank(alice);
+        dv.proveBalance();
+
+        bytes32[] memory proofs = dv.getUserProofs(alice);
+        assertEq(proofs.length, 2);
+    }
+
+    // =========================================================================
     // Fuzz Tests
     // =========================================================================
 

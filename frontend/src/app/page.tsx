@@ -8,7 +8,7 @@ import { Footer } from "@/components/footer";
 
 export default function LandingPage() {
   const router = useRouter();
-  const [verifyUid, setVerifyUid] = useState("");
+  const [verifyId, setVerifyId] = useState("");
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -28,28 +28,27 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1">
-        {/* Hero */}
         <section className="px-4 pt-16 sm:pt-24 pb-10 max-w-3xl mx-auto text-center">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-3">
-            Prove Your Polkadot Activity.{" "}
-            <span className="text-[#E6007A]">On-Chain.</span>
+            Prove Web2 Facts.{" "}
+            <span className="text-[#E6007A]">On Polkadot.</span>
           </h1>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-            Anchor verifiable proofs of your staking, governance, portfolio, and identity on Polkadot Hub.
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto mb-6">
+            Anchor tamper-proof proofs of your bank balance, credentials, social accounts, and more — without revealing sensitive data.
           </p>
 
           <div className="max-w-lg mx-auto flex gap-2">
             <input
               type="text"
-              value={verifyUid}
-              onChange={(e) => setVerifyUid(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && verifyUid && router.push(`/verify/${verifyUid}`)}
-              placeholder="Paste a credential or anchor ID to verify..."
+              value={verifyId}
+              onChange={(e) => setVerifyId(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && verifyId && router.push(`/verify/${verifyId}`)}
+              placeholder="Paste a proof ID to verify..."
               className="flex-1 border border-border rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#E6007A]/30 focus:border-[#E6007A]"
             />
             <button
-              onClick={() => verifyUid && router.push(`/verify/${verifyUid}`)}
-              disabled={!verifyUid}
+              onClick={() => verifyId && router.push(`/verify/${verifyId}`)}
+              disabled={!verifyId}
               className="px-4 py-2.5 bg-[#E6007A] text-white rounded-lg text-sm font-medium hover:bg-[#c40066] transition-colors disabled:opacity-40"
             >
               Verify
@@ -58,24 +57,23 @@ export default function LandingPage() {
           <p className="text-[10px] text-muted-foreground mt-2">No wallet needed to verify</p>
         </section>
 
-        {/* Single CTA */}
         <section className="px-4 pb-16 max-w-5xl mx-auto text-center">
           <Link
             href="/app"
             className="inline-block px-8 py-3 bg-[#E6007A] text-white rounded-xl text-sm font-medium hover:bg-[#c40066] transition-colors shadow-sm"
           >
-            Open App →
+            Create a Proof →
           </Link>
         </section>
 
-        {/* Use cases — matches proof types */}
         <section className="px-4 pb-12 max-w-5xl mx-auto">
+          <h2 className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">What can you prove?</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { icon: "\u{1F4B0}", label: "Portfolio", desc: "Cross-chain balances" },
-              { icon: "\u{1F512}", label: "Staking", desc: "DOT staking & rewards" },
-              { icon: "\u{1F5F3}", label: "Governance", desc: "OpenGov voting history" },
-              { icon: "\u{1F464}", label: "Identity", desc: "On-chain identity proof" },
+              { icon: "🏦", label: "Bank Balance", desc: "Prove assets without sharing login" },
+              { icon: "🎓", label: "Credentials", desc: "Degrees, certs, course completions" },
+              { icon: "👤", label: "Identity", desc: "KYC status, social accounts, age" },
+              { icon: "💼", label: "Employment", desc: "Job title, company, tenure" },
             ].map((uc) => (
               <div key={uc.label} className="border border-border rounded-xl p-4 text-center">
                 <span className="text-xl block mb-1.5">{uc.icon}</span>
@@ -86,18 +84,34 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Stats */}
+        <section className="px-4 pb-12 max-w-3xl mx-auto">
+          <h2 className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">How it works</h2>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            {[
+              { step: "1", title: "Connect & prove", desc: "Fetch data from any website. A zkTLS attestor verifies it came from the real source." },
+              { step: "2", title: "Anchor on-chain", desc: "Only a BLAKE2-256 fingerprint is stored on Polkadot Hub. Your data stays private." },
+              { step: "3", title: "Share & verify", desc: "Anyone can verify your proof with a link. No wallet, no login, no trust." },
+            ].map((s) => (
+              <div key={s.step}>
+                <span className="inline-block w-7 h-7 rounded-full bg-[#E6007A] text-white text-xs font-bold leading-7 mb-2">{s.step}</span>
+                <p className="text-xs font-medium mb-1">{s.title}</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="px-4 pb-16 max-w-5xl mx-auto">
           <div className="border border-border rounded-xl p-5 bg-muted/10">
             <div className="grid grid-cols-4 gap-4 text-center">
               {[
-                { value: "56", label: "Tests" },
+                { value: "60", label: "Tests" },
                 { value: "6", label: "PVM Precompiles" },
-                { value: "3", label: "Resolvers" },
-                { value: "11", label: "E2E Tests" },
+                { value: "BLAKE2", label: "Hash Function" },
+                { value: "XCM", label: "Cross-Chain" },
               ].map((s) => (
                 <div key={s.label}>
-                  <p className="text-xl font-bold text-[#E6007A]">{s.value}</p>
+                  <p className="text-lg sm:text-xl font-bold text-[#E6007A]">{s.value}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </div>
               ))}
